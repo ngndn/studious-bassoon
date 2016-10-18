@@ -21,14 +21,27 @@ def baseline(submit=False):
     model.fit(xtr, ytr)
 
     # testing
-    mse = np.mean((np.around(model.predict(xte)) - yte)**2)
+    mse = np.mean((model.predict(xte) - yte)**2)
     print('MSE (baseline) : {}'.format(mse))
 
     if submit:
         evaluate(x_test, model, 'linear_base')
 
 
-def evaluate(x, model, name):
-    # predict and save for submission
-    y = pd.Series(np.around(model.predict(x)), index=x.index, name='vote')
+def evaluate(x, model, name, round=False, negative=False):
+    """
+    Evaluate predictions using input X and MODEL.  Optionally round values to
+    0 decimals.  Always remove negative values when predicting count problems.
+
+    Save CSV for submission.
+
+    """
+    y = model.predict(x)
+    if round:
+        y = np.around(y)
+
+    if not negative:
+        y[y < 0] = 0
+
+    y = pd.Series(y, index=x.index, name='vote')
     y.to_csv('{}_submission.csv'.format(name), header=True)
