@@ -1,0 +1,37 @@
+%% metamatter
+
+\input{components/preamble}
+\input{components/commands}
+
+\begin{document}
+
+  %% frontmatter
+
+  \input{components/titlepage}
+  \input{components/disclaimer}
+  \input{components/abstract}
+
+  \tableofcontents
+
+  %% mainmatter
+
+  \input{chapters/ch01}
+  \input{chapters/ch02}
+  \input{chapters/ch03}
+  \input{chapters/ch04}
+  \input{chapters/ch05}
+
+  \appendix
+
+  \newpage
+  \input{components/appendix}
+
+  \bibliographystyle{IEEEtranN}
+  \bibliography{bibliography/literature}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
