@@ -1,0 +1,113 @@
+%% KOMA options
+\documentclass[%
+  abstraction,
+  bibliography=totoc,
+  captions=tableheading,
+  fontsize=12pt,
+  pagesize=pdftex,
+  paper=A4,
+  parskip=half
+  ]{scrreprt}
+
+\usepackage{scrhack}
+\usepackage[automark, headsepline]{scrpage2}
+\pagestyle{scrheadings}
+
+\addtokomafont{disposition}{\rmfamily}
+\setkomafont{captionlabel}{\normalfont\bfseries}
+\setkomafont{pageheadfoot}{\normalfont\sffamily}
+\setkomafont{section}{\large}
+
+% \renewcommand*{\sectionformat}{}
+% \renewcommand*{\subsectionformat}{}
+\setlength{\parskip}{.5em}
+
+%% algorithms
+\usepackage[]{algpseudocode}
+\usepackage{algorithm}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+%% bibliography
+\usepackage[square, numbers, sort]{natbib}
+
+%% colors
+\usepackage{color}
+\usepackage{xcolor}
+\definecolor{dkgray}{gray}{0.4}
+\definecolor{ltgray}{gray}{0.6}
+
+%% encoding and language
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+
+%% figures, graphics and tables
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{tabularx}
+
+\setcapindent{0pt}
+
+%% fonts
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+% \usepackage{mathabx}
+\usepackage{mathrsfs}
+% \usepackage{mathtools}
+\usepackage{microtype}
+\usepackage{sourcecodepro}
+\usepackage{ucs}
+\usepackage{xspace}
+
+%% links
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+  citecolor=dkgray,
+  colorlinks=true,
+  linkcolor=black,
+  pdfauthor={
+    Christian Fricke and
+    Dan Nguyen
+  },
+  pdffitwindow=false,
+  pdfstartview={FitW},
+  urlcolor=dkgray,
+}
+
+%% listings
+\usepackage{listings}
+\lstset{
+  backgroundcolor=\color{white},
+  basicstyle=\footnotesize\ttfamily,
+  belowcaptionskip=\bigskipamount,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=t,
+  commentstyle=\color{ltgray},
+  escapeinside={\(@*}{*@\)},
+  frame=lines,
+  keywordstyle=\color{dkgray},
+  language=Python,
+  morekeywords={*,\ldots},
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\footnotesize\color{ltgray},
+  rulecolor=\color{black},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stepnumber=1,
+  stringstyle=\color{black},
+  tabsize=4,
+  title=\lstname,
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
