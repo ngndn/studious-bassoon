@@ -41,7 +41,7 @@ def gradient_descent(xtr, ytr, alpha, tfunc):
     return theta
 
 
-def linear_tfunc(x, theta):
+def linear(x, theta):
     """
     Linear regression function. Compute outcomes of a linear model.
 
@@ -52,7 +52,7 @@ def linear_tfunc(x, theta):
     return x @ theta
 
 
-def sigmoid_tfunc(x, theta):
+def sigmoid(x, theta):
     """
     Sigmoid function. Compute outcome of sigmoid function.
 
