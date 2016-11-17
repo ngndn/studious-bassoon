@@ -12,18 +12,22 @@ def gradient_descent(xtr, ytr, alpha, tfunc):
     :param tfunc: a target function
     :return: an optimal vector theta
     """
-    x = xtr.as_matrix()
+    # x = xtr.as_matrix()
+    x = xtr
 
     # reshape so that y is a column vector,
     # it's still fine if y already a column vector
-    y = ytr.as_matrix().reshape(-1, 1)
+    # y = ytr.as_matrix().reshape(-1, 1)
+    y = ytr.reshape(-1, 1)
 
     # Initialize the theta, and the previous
     theta = np.random.rand(xtr.shape[1], 1)
     prev_theta = np.zeros([xtr.shape[1], 1])
 
+
+    # TODO: examine the epsilon, too small -> too slow, too large --> very inaccurate
     # stopping point
-    epsilon = 1e-6
+    epsilon = 1e-3
 
     # Length of data x, for make the update step smaller based on data
     m = len(x)

@@ -10,4 +10,3 @@ class BaseLineRegression:
 
     def predict(self, x):
         return self._model
-

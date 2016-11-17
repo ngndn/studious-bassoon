@@ -1,10 +1,15 @@
 import numpy as np
 import pandas as pd
+
 from pandas.util.testing import debug
+
 from sklearn.model_selection import train_test_split, LeaveOneOut
+
 from sklearn.linear_model import LinearRegression
 from BaseLineRegression import BaseLineRegression
+from LinearRegressionSelfmade import LinearRegressionSelfmade
 
+# Prepare data
 data_train = pd.read_csv('data/regression_dataset_training.csv', index_col=0)
 data_test = pd.read_csv('data/regression_dataset_testing.csv', index_col=0)
 data_test_solution = pd.read_csv('data/regression_dataset_testing_solution.csv',
@@ -75,6 +80,19 @@ def linear_with_loocv(x_train, y_train):
     linear = LinearRegression()
 
     return run_loocv(x_train, y_train, linear)
+
+
+def linear_selfmade_with_loocv(x_train, y_train):
+    """
+    A self-made linear model for regression task. Use LOOCV for model assessment
+
+    :param x_train:
+    :param y_train:
+    :return: Double (Mean Square Error)
+    """
+
+    linear_selfmade = LinearRegressionSelfmade()
+    return run_loocv(x_train, y_train, linear_selfmade)
 
 
 def linear(submit=False):
