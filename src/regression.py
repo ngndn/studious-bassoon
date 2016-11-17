@@ -3,7 +3,7 @@ import pandas as pd
 from pandas.util.testing import debug
 from sklearn.model_selection import train_test_split, LeaveOneOut
 from sklearn.linear_model import LinearRegression
-from BaseLineReg import BaseLineReg
+from BaseLineRegression import BaseLineRegression
 
 data_train = pd.read_csv('data/regression_dataset_training.csv', index_col=0)
 data_test = pd.read_csv('data/regression_dataset_testing.csv', index_col=0)
@@ -14,7 +14,7 @@ x_train, y_train = data_train.drop('vote', axis=1), data_train.vote
 x_test = data_test
 
 
-def run_LOOCV(x, y, model):
+def run_loocv(x, y, model):
     """
     Run the LOOCV with x (observations), y (outcomes) and a specific model.
     Model must have fit method for training and predict method for testing.
@@ -49,7 +49,7 @@ def run_LOOCV(x, y, model):
     return mse[0]
 
 
-def baseline_with_LOOCV(x_train, y_train):
+def baseline_with_loocv(x_train, y_train):
     """
     Baseline method for regression task. This method predict the average of y
     for all observations. Use LOOCV for model assessment.
@@ -58,12 +58,12 @@ def baseline_with_LOOCV(x_train, y_train):
     :param y_train:
     :return: Double (Mean Square Error)
     """
-    baseline = BaseLineReg()
+    baseline = BaseLineRegression()
 
-    return run_LOOCV(x_train, y_train, baseline)
+    return run_loocv(x_train, y_train, baseline)
 
 
-def linear_with_LOOCV(x_train, y_train):
+def linear_with_loocv(x_train, y_train):
     """
     Linear model for regression task. Use LinearRegression from scikit-learn.
     Use LOOCV for model assessment
@@ -74,7 +74,7 @@ def linear_with_LOOCV(x_train, y_train):
     """
     linear = LinearRegression()
 
-    return run_LOOCV(x_train, y_train, linear)
+    return run_loocv(x_train, y_train, linear)
 
 
 def linear(submit=False):

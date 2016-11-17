@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class BaseLineReg:
+class BaseLineRegression:
     def __init__(self):
         self._model = None
 
