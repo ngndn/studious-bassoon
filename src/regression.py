@@ -1,10 +1,8 @@
-from sklearn.linear_model import LinearRegression
+import numpy as np
+
 from sklearn.preprocessing import PolynomialFeatures
 
 from gradient import gradient_descent, linear
-from LinearRegressionBaseline import LinearRegressionBaseline
-from LinearRegressionSelfmade import LinearRegressionSelfmade
-from PolynomialRegression import PolynomialRegression
 
 
 class LinearRegressionSelfmade():

@@ -31,7 +31,15 @@ class Baseline(object):
         return np.full(x.shape[0], self._model)
 
 
-def _score(x, y, model, cv=10):
+def log_bernoulli_loss(true, pred):
+    return -np.mean((true * np.log(pred)) + ((1 - true) * np.log(1 - pred)))
+
+
+def mean_square_error(true, pred):
+    return np.mean((pred - true) ** 2)
+
+
+def _score(x, y, model, score_func, cv=10):
     """
     Return model MSE scores for x (observations), y (outcomes) and a specified
     model.  Model must have methods `fit` and `predict`.
@@ -53,7 +61,7 @@ def _score(x, y, model, cv=10):
         y_train, y_test = y[train_index], y[test_index]
         model.fit(x_train, y_train)
         y_pred = model.predict(x_test)
-        scores.append(((y_pred - y_test) ** 2).mean())
+        scores.append(score_func(y_test, y_pred))
 
     return np.mean(scores)
 
@@ -77,7 +85,7 @@ def evaluate(x, model, name, round=False, negative=False):
     y.to_csv('../{}_submission.csv'.format(name), header=True)
 
 
-def run(models, name=None, submit=False):
+def run(models, score_func, name=None, submit=False):
     """
     Run model evaluation for MODELS and test the best fit.  Additionally, save
     CSV of test predictions for submission to Kaggle.
@@ -85,6 +93,7 @@ def run(models, name=None, submit=False):
     Parameters
     ----------
     models : [model]
+        Family of similar models.
     name : str
     submit : bool
 
@@ -92,7 +101,7 @@ def run(models, name=None, submit=False):
     topm = None
     for model in models:
         print('Validating  : {}...'.format(model.__class__))
-        mse = _score(x_train, y_train, model)
+        mse = _score(x_train, y_train, model, score_func)
         print('MSE (train) : {}\n'.format(mse))
         if topm is None:
             topm = (model, mse)
@@ -104,7 +113,7 @@ def run(models, name=None, submit=False):
     # Testing fit
     model = topm[0]
     model.fit(x_train, y_train)
-    mse = np.mean((model.predict(x_test) - y_test) ** 2)
+    mse = np.mean(score_func(y_test, model.predict(x_test)))
     print('Best fit    : {}...'.format(model.__class__))
     print('MSE (test)  : {}'.format(mse))
 
