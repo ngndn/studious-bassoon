@@ -19,6 +19,18 @@ x_test = x_test.as_matrix()
 y_test = y_test.vote.as_matrix()
 
 
+class Baseline(object):
+
+    def __init__(self):
+        self._model = None
+
+    def fit(self, x, y):
+        self._model = np.mean(y)
+
+    def predict(self, x):
+        return np.full(x.shape[0], self._model)
+
+
 def _score(x, y, model, cv=10):
     """
     Return model MSE scores for x (observations), y (outcomes) and a specified
@@ -44,18 +56,6 @@ def _score(x, y, model, cv=10):
         scores.append(((y_pred - y_test) ** 2).mean())
 
     return np.mean(scores)
-
-
-class Baseline(object):
-
-    def __init__(self):
-        self._model = None
-
-    def fit(self, x, y):
-        self._model = np.mean(y)
-
-    def predict(self, x):
-        return np.full(x.shape[0], self._model)
 
 
 def evaluate(x, model, name, round=False, negative=False):
