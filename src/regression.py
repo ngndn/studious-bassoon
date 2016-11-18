@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import KFold, LeaveOneOut, train_test_split
+from sklearn.model_selection import KFold, LeaveOneOut
 
-from BaseLineRegression import BaseLineRegression
+from BaselineLinearRegression import BaselineLinearRegression
 from LinearRegressionSelfmade import LinearRegressionSelfmade
 
 # Prepare data
@@ -54,7 +54,7 @@ def _score(x, y, model, cv=10):
 
 def baseline(x_train, y_train):
     """Baseline method for regression task."""
-    baseline = BaseLineRegression()
+    baseline = BaselineLinearRegression()
     return _score(x_train, y_train, baseline)
 
 
@@ -89,25 +89,32 @@ def evaluate(x, model, name, round=False, negative=False):
     y.to_csv('../{}_submission.csv'.format(name), header=True)
 
 
-def run(model, name=None, submit=False):
-    # data split
-    xtr, xte, ytr, yte = train_test_split(
-        x_train, y_train, test_size=0.2, random_state=42
-    )
+def run(models, name=None, submit=False):
+    """
 
-    # validation, training
-    scores = _score(xtr, ytr, model)
-    print('MSE (validation, train) : {}'.format(np.mean(scores)))
+    Parameters
+    ----------
+    models : [model]
 
-    # validation, testing
-    model.fit(xtr, ytr)
-    mse = np.mean((model.predict(xte) - yte) ** 2)
-    print('MSE (validation, test)  : {}'.format(mse))
+    """
+    topm = None
+    for model in models:
+        print('Validating {}...'.format(model.__class__))
+        mse = np.mean(_score(x_train, y_train, model))
+        print('MSE (train) : {}'.format(mse))
+        if topm is None:
+            topm = (model, mse)
+            continue
+
+        if topm[1] > mse:
+            topm = (model, mse)
 
     # testing
+    model = topm[0]
     model.fit(x_train, y_train)
     mse = np.mean((model.predict(x_test) - y_test) ** 2)
-    print('MSE (testing)           : {}'.format(mse))
+    print('Best model: {}...'.format(model.__class__))
+    print('MSE             : {}'.format(mse))
 
     if submit:
         if name is None:
