@@ -1,128 +1,32 @@
-import numpy as np
-import pandas as pd
-
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import KFold, LeaveOneOut
+from sklearn.preprocessing import PolynomialFeatures
 
+from gradient import gradient_descent, linear
 from LinearRegressionBaseline import LinearRegressionBaseline
 from LinearRegressionSelfmade import LinearRegressionSelfmade
-
-# Prepare data
-data_train = pd.read_csv(
-    '../data/regression_dataset_training.csv',
-    index_col=0
-)
-x_train, y_train = data_train.drop('vote', axis=1), data_train.vote
-
-x_test = pd.read_csv('../data/regression_dataset_testing.csv', index_col=0)
-y_test = pd.read_csv(
-    '../data/regression_dataset_testing_solution.csv', index_col=0
-)
-y_test = y_test.vote
+from PolynomialRegression import PolynomialRegression
 
 
-def _score(x, y, model, cv=10):
-    """
-    Return model MSE scores for x (observations), y (outcomes) and a specified
-    model.  Model must have methods `fit` and `predict`.
+class LinearRegressionSelfmade():
+    def __init__(self):
+        self._theta = None
 
-    :param x: observations (matrix)
-    :param y: outcomes (column vector)
-    :param model: learning model that has fit and predict method
-    :return:
+    def fit(self, x, y, alpha=0.01):
+        self._theta = gradient_descent(x, y, alpha, linear)
 
-    """
-    x = x.as_matrix()
-    y = y.as_matrix()
-
-    # Cross-validator
-    if isinstance(cv, int):
-        cv = KFold(n_splits=10)
-    elif isinstance(cv, str) and cv == 'loo':
-        cv = LeaveOneOut()
-
-    scores = []
-    for train_index, test_index in cv.split(x):
-        x_train, x_test = x[train_index, :], x[test_index, :]
-        y_train, y_test = y[train_index], y[test_index]
-        model.fit(x_train, y_train)
-        y_pred = model.predict(x_test)
-        scores.append(((y_pred - y_test) ** 2).mean())
-
-    return scores
+    def predict(self, x):
+        return x @ self._theta
 
 
-def baseline(x_train, y_train):
-    """Baseline method for regression task."""
-    baseline = LinearRegressionBaseline()
-    return _score(x_train, y_train, baseline)
+class PolynomialRegression(object):
 
+    def __init__(self, degree):
+        self._model = PolynomialFeatures(degree=degree)
 
-def linear_regression(x_train, y_train):
-    """Linear model for regression task."""
-    linear = LinearRegression()
-    return _score(x_train, y_train, linear)
+    def fit(self, x, y):
+        x = self._model.fit_transform(x)
+        self._theta = np.linalg.inv(x.T @ x) @ x.T @ y
 
-
-def linear_regression_selfmade(x_train, y_train):
-    """A self-made linear model for regression task."""
-    linear = LinearRegressionSelfmade()
-    return _score(x_train, y_train, linear)
-
-
-def evaluate(x, model, name, round=False, negative=False):
-    """
-    Evaluate predictions using input X and MODEL.  Optionally round values to
-    0 decimals.  Always remove negative values when predicting count problems.
-
-    Save CSV for submission.
-
-    """
-    y = model.predict(x)
-    if round:
-        y = np.around(y)
-
-    if not negative:
-        y[y < 0] = 0
-
-    y = pd.Series(y, index=x.index, name='vote')
-    y.to_csv('../{}_submission.csv'.format(name), header=True)
-
-
-def run(models, name=None, submit=False):
-    """
-    Run model evaluation for MODELS and test the best fit.  Additionally, save
-    CSV of test predictions for submission to Kaggle.
-
-    Parameters
-    ----------
-    models : [model]
-    name : str
-    submit : bool
-
-    """
-    topm = None
-    for model in models:
-        print('Validating  : {}...'.format(model.__class__))
-        mse = np.mean(_score(x_train, y_train, model))
-        print('MSE (train) : {}\n'.format(mse))
-        if topm is None:
-            topm = (model, mse)
-            continue
-
-        if topm[1] > mse:
-            topm = (model, mse)
-
-    # Testing fit
-    model = topm[0]
-    model.fit(x_train, y_train)
-    mse = np.mean((model.predict(x_test) - y_test) ** 2)
-    print('Best fit    : {}...'.format(model.__class__))
-    print('MSE (test)  : {}'.format(mse))
-
-    # Kaggel:
-    if submit:
-        if name is None:
-            name = 'linear'
-
-        evaluate(x_test, model, name)
+    def predict(self, x):
+        x = self._model.fit_transform(x)
+        return x @ self._theta
