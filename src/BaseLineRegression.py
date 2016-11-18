@@ -9,4 +9,4 @@ class BaseLineRegression:
         self._model = np.mean(y)
 
     def predict(self, x):
-        return self._model
+        return np.full(x.shape, self._model)
