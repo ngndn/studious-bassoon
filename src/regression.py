@@ -91,10 +91,14 @@ def evaluate(x, model, name, round=False, negative=False):
 
 def run(models, name=None, submit=False):
     """
+    Run model evaluation for MODELS and test the best fit.  Additionally, save
+    CSV of test predictions for submission to Kaggle.
 
     Parameters
     ----------
     models : [model]
+    name : str
+    submit : bool
 
     """
     topm = None
