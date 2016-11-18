@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import KFold, LeaveOneOut
 
-from BaselineLinearRegression import BaselineLinearRegression
+from LinearRegressionBaseline import LinearRegressionBaseline
 from LinearRegressionSelfmade import LinearRegressionSelfmade
 
 # Prepare data
@@ -54,7 +54,7 @@ def _score(x, y, model, cv=10):
 
 def baseline(x_train, y_train):
     """Baseline method for regression task."""
-    baseline = BaselineLinearRegression()
+    baseline = LinearRegressionBaseline()
     return _score(x_train, y_train, baseline)
 
 
@@ -91,17 +91,21 @@ def evaluate(x, model, name, round=False, negative=False):
 
 def run(models, name=None, submit=False):
     """
+    Run model evaluation for MODELS and test the best fit.  Additionally, save
+    CSV of test predictions for submission to Kaggle.
 
     Parameters
     ----------
     models : [model]
+    name : str
+    submit : bool
 
     """
     topm = None
     for model in models:
-        print('Validating {}...'.format(model.__class__))
+        print('Validating  : {}...'.format(model.__class__))
         mse = np.mean(_score(x_train, y_train, model))
-        print('MSE (train) : {}'.format(mse))
+        print('MSE (train) : {}\n'.format(mse))
         if topm is None:
             topm = (model, mse)
             continue
@@ -109,13 +113,14 @@ def run(models, name=None, submit=False):
         if topm[1] > mse:
             topm = (model, mse)
 
-    # testing
+    # Testing fit
     model = topm[0]
     model.fit(x_train, y_train)
     mse = np.mean((model.predict(x_test) - y_test) ** 2)
-    print('Best model: {}...'.format(model.__class__))
-    print('MSE             : {}'.format(mse))
+    print('Best fit    : {}...'.format(model.__class__))
+    print('MSE (test)  : {}'.format(mse))
 
+    # Kaggel:
     if submit:
         if name is None:
             name = 'linear'
