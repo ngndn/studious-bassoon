@@ -142,13 +142,13 @@ def main():
         print('{} ({:0.2f})'.format(feature, score))
 
     # Select features
-    x_train = fs.transform(x_train)
-    x_test = fs.transform(x_test)
+    xtr = fs.transform(x_train)
+    xte = fs.transform(x_test)
 
     # Regression
     print('\nScoring models...\n')
     models = [Baseline(), PolynomialRegression(1), PolynomialRegression(2)]
-    data = [x_train, y_train, x_test, y_test]
+    data = [xtr, y_train, xte, y_test]
     run(models, data, score_func=mean_squared_error)
 
     # Classification
