@@ -5,7 +5,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from gradient import gradient_descent, linear
 
 
-class LinearRegressionSelfmade():
+class LinearRegression():
 
     def __init__(self):
         self._theta = None
