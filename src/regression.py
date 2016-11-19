@@ -6,8 +6,12 @@ from gradient import gradient_descent, linear
 
 
 class LinearRegressionSelfmade():
+
     def __init__(self):
         self._theta = None
+
+    def __repr__(self):
+        return '{}'.format(self.__class__.__name__)
 
     def fit(self, x, y, alpha=0.01):
         self._theta = gradient_descent(x, y, alpha, linear)
@@ -19,7 +23,11 @@ class LinearRegressionSelfmade():
 class PolynomialRegression(object):
 
     def __init__(self, degree):
+        self._degree = degree
         self._model = PolynomialFeatures(degree=degree)
+
+    def __repr__(self):
+        return '{}<{}>'.format(self.__class__.__name__, self._degree)
 
     def fit(self, x, y):
         x = self._model.fit_transform(x)

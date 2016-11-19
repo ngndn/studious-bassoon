@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
 
+from sklearn.feature_selection import SelectKBest, f_regression, chi2
 from sklearn.model_selection import KFold, LeaveOneOut
+
+from regression import PolynomialRegression
 
 # Prepare data
 data_train = pd.read_csv(
@@ -24,19 +27,14 @@ class Baseline(object):
     def __init__(self):
         self._model = None
 
+    def __repr__(self):
+        return '{}'.format(self.__class__.__name__)
+
     def fit(self, x, y):
         self._model = np.mean(y)
 
     def predict(self, x):
         return np.full(x.shape[0], self._model)
-
-
-def log_bernoulli_loss(true, pred):
-    return -np.mean((true * np.log(pred)) + ((1 - true) * np.log(1 - pred)))
-
-
-def mean_squared_error(true, pred):
-    return np.mean((pred - true) ** 2)
 
 
 def _score(x, y, model, score_func, cv=10):
@@ -66,6 +64,14 @@ def _score(x, y, model, score_func, cv=10):
     return np.mean(scores)
 
 
+def log_bernoulli_loss(true, pred):
+    return -np.mean((true * np.log(pred)) + ((1 - true) * np.log(1 - pred)))
+
+
+def mean_squared_error(true, pred):
+    return np.mean((pred - true) ** 2)
+
+
 def evaluate(x, model, name, round=False, negative=False):
     """
     Evaluate predictions using input X and MODEL.  Optionally round values to
@@ -85,7 +91,7 @@ def evaluate(x, model, name, round=False, negative=False):
     y.to_csv('../{}_submission.csv'.format(name), header=True)
 
 
-def run(models, score_func, name=None, submit=False):
+def run(models, data, score_func, name=None, submit=False):
     """
     Run model evaluation for MODELS and test the best fit.  Additionally, save
     CSV of test predictions for submission to Kaggle.
@@ -94,14 +100,15 @@ def run(models, score_func, name=None, submit=False):
     ----------
     models : [model]
         Family of similar models.
+    data : [x_train, y_train, x_test, y_test]
     name : str
     submit : bool
 
     """
     topm = None
     for model in models:
-        print('Validating  : {}...'.format(model.__class__))
-        mse = _score(x_train, y_train, model, score_func)
+        print('Validating  : {}'.format(model))
+        mse = _score(data[0], data[1], model, score_func)
         print('MSE (train) : {}\n'.format(mse))
         if topm is None:
             topm = (model, mse)
@@ -112,9 +119,9 @@ def run(models, score_func, name=None, submit=False):
 
     # Testing fit
     model = topm[0]
-    model.fit(x_train, y_train)
-    mse = np.mean(score_func(y_test, model.predict(x_test)))
-    print('Best fit    : {}...'.format(model.__class__))
+    model.fit(*data[:2])
+    mse = score_func(data[3], model.predict(data[2]))
+    print('Best fit    : {}'.format(model))
     print('MSE (test)  : {}'.format(mse))
 
     # Kaggel:
@@ -122,4 +129,31 @@ def run(models, score_func, name=None, submit=False):
         if name is None:
             name = 'linear'
 
-        evaluate(x_test, model, name)
+        evaluate(data[2], model, name)
+
+
+def main():
+    global x_train, y_train, x_test, y_test
+
+    # Feature selection for regression on source data
+    print('Selecting features for regression...\n')
+    fs = SelectKBest(score_func=f_regression, k=5).fit(x_train, y_train)
+    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-5:]:
+        print('{} ({:0.2f})'.format(feature, score))
+
+    # Select features
+    x_train = fs.transform(x_train)
+    x_test = fs.transform(x_test)
+
+    # Regression
+    print('\nScoring models...\n')
+    models = [Baseline(), PolynomialRegression(1), PolynomialRegression(2)]
+    data = [x_train, y_train, x_test, y_test]
+    run(models, data, score_func=mean_squared_error)
+
+    # Classification
+    pass
+
+
+if __name__ == '__main__':
+    main()
