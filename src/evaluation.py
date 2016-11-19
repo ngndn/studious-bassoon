@@ -35,7 +35,7 @@ def log_bernoulli_loss(true, pred):
     return -np.mean((true * np.log(pred)) + ((1 - true) * np.log(1 - pred)))
 
 
-def mean_square_error(true, pred):
+def mean_squared_error(true, pred):
     return np.mean((pred - true) ** 2)
 
 
