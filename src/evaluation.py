@@ -135,6 +135,7 @@ def run(models, data, score_func, name=None, submit=False):
 def main():
     global x_train, y_train, x_test, y_test
 
+    # Regression
     # Feature selection for regression on source data
     print('Selecting features for regression...\n')
     fs = SelectKBest(score_func=f_regression, k=5).fit(x_train, y_train)
@@ -145,14 +146,18 @@ def main():
     xtr = fs.transform(x_train)
     xte = fs.transform(x_test)
 
-    # Regression
+    # Run model comparison
     print('\nScoring models...\n')
     models = [Baseline(), PolynomialRegression(1), PolynomialRegression(2)]
     data = [xtr, y_train, xte, y_test]
     run(models, data, score_func=mean_squared_error)
 
     # Classification
-    pass
+    # Feature selection for classification on source data
+    print('Selecting features for classification...\n')
+    fs = SelectKBest(score_func=chi2, k=7).fit(x_train, y_train)
+    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-7:]:
+        print('{} ({:0.2f})'.format(feature, score))
 
 
 if __name__ == '__main__':
