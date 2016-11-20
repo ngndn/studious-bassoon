@@ -1,6 +1,9 @@
+import sys
+
 import numpy as np
 import pandas as pd
 
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectKBest, f_regression, chi2
 from sklearn.model_selection import KFold, LeaveOneOut
 
@@ -22,29 +25,30 @@ class Baseline(object):
         return np.full(x.shape[0], self._model)
 
 
-def load_data(task='regression'):
-    if task == 'regression':
+def _load(task_name):
+    if task_name == 'regression':
         outcome = 'vote'
-
-    if task == 'classification':
+    elif task_name == 'classification':
         outcome = 'rating'
+    else:
+        raise NotImplementedError
 
-    # Prepare data
     data_train = pd.read_csv(
-        '../data/' + task + '_dataset_training.csv',
+        '../data/{}_dataset_training.csv'.format(task_name),
         index_col=0
     )
     x_train = data_train.drop(outcome, axis=1).as_matrix()
-    y_train = data_train.vote.as_matrix()
-
-    x_test = pd.read_csv('../data/' + task + '_dataset_testing.csv',
-                         index_col=0)
-    y_test = pd.read_csv(
-        '../data/' + task + '_dataset_testing_solution.csv', index_col=0
+    y_train = getattr(data_train, outcome).as_matrix()
+    x_test = pd.read_csv(
+        '../data/{}_dataset_testing.csv'.format(task_name),
+        index_col=0
     )
     x_test = x_test.as_matrix()
-    y_test = y_test.vote.as_matrix()
-
+    y_test = pd.read_csv(
+        '../data/{}_dataset_testing_solution.csv'.format(task_name),
+        index_col=0
+    )
+    y_test = getattr(y_test, outcome).as_matrix()
     return data_train, x_train, y_train, x_test, y_test
 
 
@@ -118,9 +122,9 @@ def run(models, data, score_func, name=None, submit=False):
     """
     topm = None
     for model in models:
-        print('Validating  : {}'.format(model))
+        print('Validating    : {}'.format(model))
         mse = _score(data[0], data[1], model, score_func)
-        print('MSE (train) : {}\n'.format(mse))
+        print('Score (train) : {}\n'.format(mse))
         if topm is None:
             topm = (model, mse)
             continue
@@ -132,8 +136,8 @@ def run(models, data, score_func, name=None, submit=False):
     model = topm[0]
     model.fit(*data[:2])
     mse = score_func(data[3], model.predict(data[2]))
-    print('Best fit    : {}'.format(model))
-    print('MSE (test)  : {}'.format(mse))
+    print('Best fit      : {}'.format(model))
+    print('Score (test)  : {}'.format(mse))
 
     # Kaggel:
     if submit:
@@ -143,10 +147,10 @@ def run(models, data, score_func, name=None, submit=False):
         evaluate(data[2], model, name)
 
 
-def main():
-    data_train, x_train, y_train, x_test, y_test = load_data('regression')
+def run_regression():
+    # Prepare data
+    data_train, x_train, y_train, x_test, y_test = _load('regression')
 
-    # Regression
     # Feature selection for regression on source data
     print('Selecting features for regression...\n')
     fs = SelectKBest(score_func=f_regression, k=5).fit(x_train, y_train)
@@ -163,13 +167,35 @@ def main():
     data = [xtr, y_train, xte, y_test]
     run(models, data, score_func=mean_squared_error)
 
-    # Classification
+
+def run_classification():
+    # Prepare data
+    data_train, x_train, y_train, x_test, y_test = _load('classification')
+
     # Feature selection for classification on source data
     print('Selecting features for classification...\n')
     fs = SelectKBest(score_func=chi2, k=7).fit(x_train, y_train)
     for score, feature in sorted(zip(fs.scores_, data_train.columns))[-7:]:
         print('{} ({:0.2f})'.format(feature, score))
 
+    # Select features
+    xtr = fs.transform(x_train)
+    xte = fs.transform(x_test)
+
+    # Run model comparison
+    print('\nScoring models...\n')
+    models = [Baseline()]
+    data = [xtr, y_train, xte, y_test]
+    run(models, data, score_func=log_bernoulli_loss)
+
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) > 1:
+        if sys.argv == 'reg':
+            run_regression()
+        elif sys.argv == 'cls':
+            run_classification()
+
+    else:
+        run_regression()
+        run_classification()
