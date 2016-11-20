@@ -6,21 +6,6 @@ from sklearn.model_selection import KFold, LeaveOneOut
 
 from regression import PolynomialRegression
 
-# Prepare data
-data_train = pd.read_csv(
-    '../data/regression_dataset_training.csv',
-    index_col=0
-)
-x_train = data_train.drop('vote', axis=1).as_matrix()
-y_train = data_train.vote.as_matrix()
-
-x_test = pd.read_csv('../data/regression_dataset_testing.csv', index_col=0)
-y_test = pd.read_csv(
-    '../data/regression_dataset_testing_solution.csv', index_col=0
-)
-x_test = x_test.as_matrix()
-y_test = y_test.vote.as_matrix()
-
 
 class Baseline(object):
 
@@ -35,6 +20,32 @@ class Baseline(object):
 
     def predict(self, x):
         return np.full(x.shape[0], self._model)
+
+
+def load_data(task='regression'):
+    if task == 'regression':
+        outcome = 'vote'
+
+    if task == 'classification':
+        outcome = 'rating'
+
+    # Prepare data
+    data_train = pd.read_csv(
+        '../data/' + task + '_dataset_training.csv',
+        index_col=0
+    )
+    x_train = data_train.drop(outcome, axis=1).as_matrix()
+    y_train = data_train.vote.as_matrix()
+
+    x_test = pd.read_csv('../data/' + task + '_dataset_testing.csv',
+                         index_col=0)
+    y_test = pd.read_csv(
+        '../data/' + task + '_dataset_testing_solution.csv', index_col=0
+    )
+    x_test = x_test.as_matrix()
+    y_test = y_test.vote.as_matrix()
+
+    return data_train, x_train, y_train, x_test, y_test
 
 
 def _score(x, y, model, score_func, cv=10):
@@ -133,7 +144,7 @@ def run(models, data, score_func, name=None, submit=False):
 
 
 def main():
-    global x_train, y_train, x_test, y_test
+    data_train, x_train, y_train, x_test, y_test = load_data('regression')
 
     # Regression
     # Feature selection for regression on source data
