@@ -191,9 +191,9 @@ def run_classification():
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        if sys.argv == 'reg':
+        if sys.argv[1] == 'reg':
             run_regression()
-        elif sys.argv == 'cls':
+        elif sys.argv[1] == 'cls':
             run_classification()
 
     else:
