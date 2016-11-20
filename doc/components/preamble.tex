@@ -1,13 +1,14 @@
 %% KOMA options
 \documentclass[%
-  abstraction,
+  abstract,
   bibliography=totoc,
   captions=tableheading,
   fontsize=12pt,
   pagesize=pdftex,
   paper=A4,
-  parskip=half
-  ]{scrreprt}
+  parskip=half,
+  twocolumn
+  ]{scrartcl}
 
 \usepackage{scrhack}
 \usepackage[automark, headsepline]{scrpage2}
@@ -16,7 +17,7 @@
 \addtokomafont{disposition}{\rmfamily}
 \setkomafont{captionlabel}{\normalfont\bfseries}
 \setkomafont{pageheadfoot}{\normalfont\sffamily}
-\setkomafont{section}{\large}
+% \setkomafont{section}{\large}
 
 % \renewcommand*{\sectionformat}{}
 % \renewcommand*{\subsectionformat}{}
