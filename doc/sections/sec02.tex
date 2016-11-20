@@ -1,2 +1,29 @@
 \section{Methods}
 \label{sec:two}
+
+We employ multiple different methods for the problems of feature selection,
+regression and classification.  All methods are tested against a baseline, which
+is given by the mean (argue).
+
+\subsection{Feature Selection}
+
+Select features based on highest scores:
+
+\begin{itemize}
+\item f\_regression (F-value between label/feature for regression tasks)
+\item chi2 (Chi-squared stats of non-negative features for classification tasks)
+\end{itemize}
+
+\subsection{Regression}
+
+Here, we implement linear regression with gradient descent and polynomial
+regression for a degree of 2.
+
+\subsection{Classification}
+
+KNN and then some.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

@@ -1,2 +1,42 @@
 \section{Results}
 \label{sec:four}
+
+Show off performance characteristics for each method using f-measure, MSE and
+Log-Bernoulli Loss in a table, like this~\ref{tab:perf}, for example.
+
+\begin{table*}[p]
+  \caption{Regression performance comparison of \ldots}
+  \centering\small
+  \renewcommand{\tabcolsep}{1pt}
+  \newcolumntype{C}{>{\centering\arraybackslash}X}%
+  \begin{tabularx}{\textwidth}{@{}cCCc@{}}
+    \toprule
+    \bfseries Model
+      & \bfseries Featured & \bfseries Non-featured & \bfseries Average
+      \\
+      & \footnotesize \precision / \recall / \fmeasure
+      & \footnotesize \precision / \recall / \fmeasure
+      & \footnotesize \fmeasure
+      \\
+    \midrule
+    \multirow{2}{*}{(1)}
+      & 0.871 / 0.936 / 0.902 & 0.989 / 0.977 / 0.983 & 0.970 \\
+      & 0.781 / 0.877 / 0.826 & 0.980 / 0.960 / 0.970 & 0.949 \\[2ex]
+    \multirow{2}{*}{(2)}
+      & $\perp$               & $\perp$               & $\perp$ \\
+      & 0.903 / 0.900 / 0.901 & 0.980 / 0.981 / 0.980 & 0.967 \\[2ex]
+    \multirow{2}{*}{(3)}
+      & 0.966 / 0.961 / 0.964 & $\perp$               & $\perp$ \\
+      & 0.949 / 0.939 / 0.944 & 0.940 / 0.950 / 0.945 & 0.944 \\[2ex]
+    \multirow{2}{*}{(4)}
+      & 0.900 / 0.920 / 0.910 & 0.980 / 0.970 / 0.975 & 0.957 \\
+      & 0.859 / 0.907 / 0.882 & 0.973 / 0.958 / 0.965 & 0.947 \\
+    \bottomrule
+  \end{tabularx}
+\label{tab:perf}
+\end{table*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

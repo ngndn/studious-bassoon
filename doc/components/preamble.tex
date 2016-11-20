@@ -10,18 +10,27 @@
   twocolumn
   ]{scrartcl}
 
-\usepackage{scrhack}
-\usepackage[automark, headsepline]{scrpage2}
-\pagestyle{scrheadings}
+% \usepackage{scrhack}
+% \usepackage[automark, headsepline]{scrpage2}
+% \pagestyle{scrheadings}
 
-\addtokomafont{disposition}{\rmfamily}
+% \addtokomafont{disposition}{\rmfamily}
 \setkomafont{captionlabel}{\normalfont\bfseries}
 \setkomafont{pageheadfoot}{\normalfont\sffamily}
-% \setkomafont{section}{\large}
+\setkomafont{section}{\large}
+% \setlength{\parskip}{.5em}
 
 % \renewcommand*{\sectionformat}{}
 % \renewcommand*{\subsectionformat}{}
-\setlength{\parskip}{.5em}
+\RedeclareSectionCommand[
+  beforeskip=-\baselineskip,
+  afterskip=.2\baselineskip]{section}
+\RedeclareSectionCommand[
+  beforeskip=-.5\baselineskip,
+  afterskip=.1\baselineskip]{subsection}
+\RedeclareSectionCommand[
+  beforeskip=-.25\baselineskip,
+  afterskip=.05\baselineskip]{subsubsection}
 
 %% algorithms
 \usepackage[]{algpseudocode}
@@ -48,6 +57,7 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{longtable}
+\usepackage{multirow}
 \usepackage{tabularx}
 
 \setcapindent{0pt}
