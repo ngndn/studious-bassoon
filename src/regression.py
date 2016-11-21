@@ -1,11 +1,12 @@
 import numpy as np
 
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 
 from gradient import gradient_descent, linear
 
 
-class LinearRegression():
+class LinearRegressionCustom(object):
 
     def __init__(self):
         self._theta = None

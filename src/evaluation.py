@@ -1,3 +1,4 @@
+import operator as op
 import sys
 
 import numpy as np
@@ -5,9 +6,10 @@ import pandas as pd
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectKBest, f_regression, chi2
+from sklearn.metrics import f1_score
 from sklearn.model_selection import KFold, LeaveOneOut
 
-from regression import PolynomialRegression
+from regression import LinearRegression, PolynomialRegression
 
 
 class Baseline(object):
@@ -52,15 +54,27 @@ def _load(task_name):
     return data_train, x_train, y_train, x_test, y_test
 
 
-def _score(x, y, model, score_func, cv=10):
+def _score(x, y, model, score_func, cv=10, round=False):
     """
     Return model MSE scores for x (observations), y (outcomes) and a specified
     model.  Model must have methods `fit` and `predict`.
 
-    :param x: observations (matrix)
-    :param y: outcomes (column vector)
-    :param model: learning model that has fit and predict method
-    :return:
+    Parameters
+    ----------
+    x : numpy.matrix
+    y : numpy.matrix
+    model : classifier / predictor
+    score_func : callable scoring function
+    cv : int
+        Number of folds for cross validation
+    round : bool
+        Whether or not the score_func expects labels, or probabilities for each
+        prediction.
+
+
+    Returns
+    -------
+    score : float
 
     """
     if isinstance(cv, int):
@@ -74,13 +88,14 @@ def _score(x, y, model, score_func, cv=10):
         y_train, y_test = y[train_index], y[test_index]
         model.fit(x_train, y_train)
         y_pred = model.predict(x_test)
+        y_pred = np.round(y_pred) if round else y_pred
         scores.append(score_func(y_test, y_pred))
 
     return np.mean(scores)
 
 
 def log_bernoulli_loss(true, pred):
-    return -np.mean((true * np.log(pred)) + ((1 - true) * np.log(1 - pred)))
+    return -np.mean(true * np.log(pred) + (1 - true) * np.log(1 - pred))
 
 
 def mean_squared_error(true, pred):
@@ -106,7 +121,8 @@ def evaluate(x, model, name, round=False, negative=False):
     y.to_csv('../{}_submission.csv'.format(name), header=True)
 
 
-def run(models, data, score_func, name=None, submit=False):
+def run(models, data, score_func, name=None, submit=False, round=False,
+        optimization=None):
     """
     Run model evaluation for MODELS and test the best fit.  Additionally, save
     CSV of test predictions for submission to Kaggle.
@@ -118,26 +134,39 @@ def run(models, data, score_func, name=None, submit=False):
     data : [x_train, y_train, x_test, y_test]
     name : str
     submit : bool
+    round : bool
+    optimization : str
 
     """
+    if optimization == 'maximum':
+        score_comp = op.lt
+    elif optimization == 'minimum':
+        score_comp = op.gt
+    else:
+        # raise NotImplementedError
+        # Default to minimum
+        score_comp = op.gt
+
     topm = None
     for model in models:
         print('Validating    : {}'.format(model))
-        mse = _score(data[0], data[1], model, score_func)
-        print('Score (train) : {}\n'.format(mse))
+        score = _score(data[0], data[1], model, score_func, round=round)
+        print('Score (train) : {}\n'.format(score))
         if topm is None:
-            topm = (model, mse)
+            topm = (model, score)
             continue
 
-        if topm[1] > mse:
-            topm = (model, mse)
+        if score_comp(topm[1], score):
+            topm = (model, score)
 
     # Testing fit
     model = topm[0]
     model.fit(*data[:2])
-    mse = score_func(data[3], model.predict(data[2]))
+    y_pred = model.predict(data[2])
+    y_pred = np.round(y_pred) if round else y_pred
+    score = score_func(data[3], y_pred)
     print('Best fit      : {}'.format(model))
-    print('Score (test)  : {}'.format(mse))
+    print('Score (test)  : {}'.format(score))
 
     # Kaggel:
     if submit:
@@ -153,8 +182,8 @@ def run_regression():
 
     # Feature selection for regression on source data
     print('Selecting features for regression...\n')
-    fs = SelectKBest(score_func=f_regression, k=5).fit(x_train, y_train)
-    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-5:]:
+    fs = SelectKBest(score_func=f_regression, k=7).fit(x_train, y_train)
+    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-7:]:
         print('{} ({:0.2f})'.format(feature, score))
 
     # Select features
@@ -163,7 +192,12 @@ def run_regression():
 
     # Run model comparison
     print('\nScoring models...\n')
-    models = [Baseline(), PolynomialRegression(1), PolynomialRegression(2)]
+    models = [
+        Baseline(),
+        LinearRegression(),
+        PolynomialRegression(1),
+        PolynomialRegression(2)
+    ]
     data = [xtr, y_train, xte, y_test]
     run(models, data, score_func=mean_squared_error)
 
@@ -184,9 +218,12 @@ def run_classification():
 
     # Run model comparison
     print('\nScoring models...\n')
-    models = [Baseline()]
+    models = [
+        Baseline(),
+        RandomForestClassifier(n_estimators=10)
+    ]
     data = [xtr, y_train, xte, y_test]
-    run(models, data, score_func=log_bernoulli_loss)
+    run(models, data, score_func=f1_score, round=True, optimization='maximum')
 
 
 if __name__ == '__main__':
