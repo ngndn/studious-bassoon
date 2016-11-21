@@ -15,9 +15,6 @@ class KNN(object):
     def __repr__(self):
         return '{}<{}>'.format(self.__class__.__name__, self._k)
 
-    def euclidean_distance(self, a, b):
-        return np.dot(a - b, a - b)
-
     def fit(self, x, y):
         self._model_x = x.copy()
         self._model_y = y.copy()
@@ -30,7 +27,8 @@ class KNN(object):
             for j in range(self._num_obs):
                 distance.append(euclidean_distance(x[i], self._model_x[j]))
 
-            top_k_label = self._model_y[np.argsort(distance)[::-1]][:self._k]
+            top_k_index = np.argpartition(distance, -self._k)[-self._k:]
+            top_k_label = self._model_y[top_k_index]
             pred.append(np.mean(top_k_label))
 
         return np.array(pred)
