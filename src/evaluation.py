@@ -4,12 +4,18 @@ import sys
 import numpy as np
 import pandas as pd
 
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
 from sklearn.feature_selection import SelectKBest, f_regression, chi2
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import f1_score
 from sklearn.model_selection import KFold, LeaveOneOut
 
-from regression import LinearRegression, PolynomialRegression
+from classification import KNN
+from regression import (
+    LinearRegression,
+    LinearRegressionCustom,
+    PolynomialRegression
+)
 
 
 class Baseline(object):
@@ -190,11 +196,16 @@ def run_regression():
     xtr = fs.transform(x_train)
     xte = fs.transform(x_test)
 
+    # Add bias term
+    # xtr = np.append(np.ones((xtr.shape[0], 1)), xtr, axis=1)
+    # xte = np.append(np.ones((xte.shape[0], 1)), xte, axis=1)
+
     # Run model comparison
     print('\nScoring models...\n')
     models = [
         Baseline(),
         LinearRegression(),
+        LinearRegressionCustom(),
         PolynomialRegression(1),
         PolynomialRegression(2)
     ]
@@ -220,6 +231,8 @@ def run_classification():
     print('\nScoring models...\n')
     models = [
         Baseline(),
+        KNN(1),
+        KNeighborsClassifier(),
         RandomForestClassifier(n_estimators=10)
     ]
     data = [xtr, y_train, xte, y_test]

@@ -25,8 +25,8 @@ def gradient_descent(xtr, ytr, alpha, tfunc):
     prev_theta = np.zeros([xtr.shape[1], 1])
 
 
-    # TODO: examine the epsilon, too small -> too slow, too large --> very inaccurate
-    # stopping point
+    # TODO: examine the epsilon, too small -> too slow, too large --> very
+    # inaccurate stopping point
     epsilon = 1e-3
 
     # Length of data x, for make the update step smaller based on data

@@ -31,9 +31,10 @@ class PolynomialRegression(object):
         return '{}<{}>'.format(self.__class__.__name__, self._degree)
 
     def fit(self, x, y):
-        x = self._model.fit_transform(x)
+        self._model.fit(x, y)
+        x = self._model.transform(x)
         self._theta = np.linalg.inv(x.T @ x) @ x.T @ y
 
     def predict(self, x):
-        x = self._model.fit_transform(x)
+        x = self._model.transform(x)
         return x @ self._theta
