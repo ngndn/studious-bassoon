@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 
-from gradient import gradient_descent, linear
+from gradient import gradient_descent, linear, sigmoid
 
 
 class LinearRegressionCustom(object):
@@ -14,7 +14,7 @@ class LinearRegressionCustom(object):
     def __repr__(self):
         return '{}'.format(self.__class__.__name__)
 
-    def fit(self, x, y, alpha=0.01):
+    def fit(self, x, y, alpha=0.001):
         self._theta = gradient_descent(x, y, alpha, linear)
 
     def predict(self, x):

@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
 from sklearn.feature_selection import SelectKBest, f_regression, chi2
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import f1_score
+from sklearn.metrics import accuracy_score, f1_score, log_loss
 from sklearn.model_selection import KFold, LeaveOneOut
 
 from classification import KNN
@@ -188,8 +188,9 @@ def run_regression():
 
     # Feature selection for regression on source data
     print('Selecting features for regression...\n')
-    fs = SelectKBest(score_func=f_regression, k=7).fit(x_train, y_train)
-    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-7:]:
+    k = 7
+    fs = SelectKBest(score_func=f_regression, k=k).fit(x_train, y_train)
+    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-k:]:
         print('{} ({:0.2f})'.format(feature, score))
 
     # Select features
@@ -205,7 +206,7 @@ def run_regression():
     models = [
         Baseline(),
         LinearRegression(),
-        LinearRegressionCustom(),
+        # LinearRegressionCustom(),
         PolynomialRegression(1),
         PolynomialRegression(2)
     ]
@@ -219,8 +220,9 @@ def run_classification():
 
     # Feature selection for classification on source data
     print('Selecting features for classification...\n')
-    fs = SelectKBest(score_func=chi2, k=7).fit(x_train, y_train)
-    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-7:]:
+    k = 7
+    fs = SelectKBest(score_func=chi2, k=k).fit(x_train, y_train)
+    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-k:]:
         print('{} ({:0.2f})'.format(feature, score))
 
     # Select features
@@ -231,12 +233,23 @@ def run_classification():
     print('\nScoring models...\n')
     models = [
         Baseline(),
-        KNN(1),
+        # KNN(5),
         KNeighborsClassifier(),
-        RandomForestClassifier(n_estimators=10)
+        RandomForestClassifier(n_estimators=10),
+        BaggingClassifier(
+            KNeighborsClassifier(),
+            max_samples=0.5,
+            max_features=0.5
+        )
     ]
     data = [xtr, y_train, xte, y_test]
-    run(models, data, score_func=f1_score, round=True, optimization='maximum')
+    run(
+        models,
+        data,
+        score_func=accuracy_score,
+        round=True,
+        optimization='maximum'
+    )
 
 
 if __name__ == '__main__':
