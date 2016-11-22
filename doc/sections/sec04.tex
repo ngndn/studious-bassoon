@@ -2,39 +2,49 @@
 \label{sec:four}
 
 Show off performance characteristics for each method using f-measure, MSE and
-Log-Bernoulli Loss in a table, like this~\ref{tab:perf}, for example.
+Log-Bernoulli Loss in a table, like this~\ref{tab:regperf}, for example.
 
-\begin{table*}[p]
-  \caption{Regression performance comparison of \ldots}
-  \centering\small
-  \renewcommand{\tabcolsep}{1pt}
+\begin{table}[t]
+  \caption{Regression performance comparison of baseline (1), linear regression
+    (2) and polynomial regression of degree two (2) as measured using the mean
+    squared error on the test data set.}
+  % \centering\small
+  % \renewcommand{\tabcolsep}{1pt}
   \newcolumntype{C}{>{\centering\arraybackslash}X}%
-  \begin{tabularx}{\textwidth}{@{}cCCc@{}}
+  % \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+  \begin{tabularx}{\linewidth}{@{}cCc@{}}
     \toprule
-    \bfseries Model
-      & \bfseries Featured & \bfseries Non-featured & \bfseries Average
-      \\
-      & \footnotesize \precision / \recall / \fmeasure
-      & \footnotesize \precision / \recall / \fmeasure
-      & \footnotesize \fmeasure
-      \\
+    \bfseries Model & \bfseries Top-$k$ Features & \bfseries MSE \\
     \midrule
-    \multirow{2}{*}{(1)}
-      & 0.871 / 0.936 / 0.902 & 0.989 / 0.977 / 0.983 & 0.970 \\
-      & 0.781 / 0.877 / 0.826 & 0.980 / 0.960 / 0.970 & 0.949 \\[2ex]
-    \multirow{2}{*}{(2)}
-      & $\perp$               & $\perp$               & $\perp$ \\
-      & 0.903 / 0.900 / 0.901 & 0.980 / 0.981 / 0.980 & 0.967 \\[2ex]
-    \multirow{2}{*}{(3)}
-      & 0.966 / 0.961 / 0.964 & $\perp$               & $\perp$ \\
-      & 0.949 / 0.939 / 0.944 & 0.940 / 0.950 / 0.945 & 0.944 \\[2ex]
-    \multirow{2}{*}{(4)}
-      & 0.900 / 0.920 / 0.910 & 0.980 / 0.970 / 0.975 & 0.957 \\
-      & 0.859 / 0.907 / 0.882 & 0.973 / 0.958 / 0.965 & 0.947 \\
+    (1) & --- &  12.60835 \\
+    (2) &  10 &  0.047144 \\
+    (3) &  13 &  0.032151 \\
     \bottomrule
   \end{tabularx}
-\label{tab:perf}
-\end{table*}
+\label{tab:regperf}
+\end{table}
+
+\begin{table}[t]
+  \caption{Classification performance comparison of baseline (1), KNN with 1
+    (2) and 5 neighbours (3), random forest with 10 (4) and 50 (5) decision
+    trees as measured using the \fmeasure{} on the test data set.}
+  % \centering\small
+  % \renewcommand{\tabcolsep}{1pt}
+  \newcolumntype{C}{>{\centering\arraybackslash}X}%
+  % \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+  \begin{tabularx}{\linewidth}{@{}cCc@{}}
+    \toprule
+    \bfseries Model & \bfseries Top-$k$ Features & \bfseries \fmeasure{} \\
+    \midrule
+    (1) & --- & 0.771499 \\
+    (2) &   4 & 0.805405 \\
+    (3) &   4 & 0.799732 \\
+    (4) &   6 & 0.812203 \\
+    (5) &   6 & 0.814915 \\
+    \bottomrule
+  \end{tabularx}
+\label{tab:clsperf}
+\end{table}
 
 %%% Local Variables:
 %%% mode: latex
