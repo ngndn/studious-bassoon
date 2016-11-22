@@ -4,16 +4,22 @@ import sys
 import numpy as np
 import pandas as pd
 
-from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
 from sklearn.feature_selection import SelectKBest, f_regression, chi2
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, f1_score, log_loss
 from sklearn.model_selection import KFold, LeaveOneOut
 
-from classification import KNN
+from classification import (
+    BaggingClassifier,
+    GradientBoostingRegressor,
+    KNeighborsClassifier,
+    KNN,
+    RandomForestClassifier,
+    SGDClassifier
+)
 from regression import (
     LinearRegression,
     LinearRegressionCustom,
+    LogisticRegression,
     PolynomialRegression
 )
 
@@ -155,7 +161,7 @@ def run(models, data, score_func, name=None, submit=False, round=False,
 
     topm = None
     for model in models:
-        print('Validating    : {}'.format(model))
+        print('Validating    : {}'.format(model.__class__.__name__))
         score = _score(data[0], data[1], model, score_func, round=round)
         print('Score (train) : {}\n'.format(score))
         if topm is None:
@@ -171,7 +177,7 @@ def run(models, data, score_func, name=None, submit=False, round=False,
     y_pred = model.predict(data[2])
     y_pred = np.round(y_pred) if round else y_pred
     score = score_func(data[3], y_pred)
-    print('Best fit      : {}'.format(model))
+    print('Best fit      : {}'.format(model.__class__.__name__))
     print('Score (test)  : {}'.format(score))
 
     # Kaggel:
@@ -208,48 +214,61 @@ def run_regression():
         LinearRegression(),
         # LinearRegressionCustom(),
         PolynomialRegression(1),
-        PolynomialRegression(2)
-    ]
-    data = [xtr, y_train, xte, y_test]
-    run(models, data, score_func=mean_squared_error)
-
-
-def run_classification():
-    # Prepare data
-    data_train, x_train, y_train, x_test, y_test = _load('classification')
-
-    # Feature selection for classification on source data
-    print('Selecting features for classification...\n')
-    k = 7
-    fs = SelectKBest(score_func=chi2, k=k).fit(x_train, y_train)
-    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-k:]:
-        print('{} ({:0.2f})'.format(feature, score))
-
-    # Select features
-    xtr = fs.transform(x_train)
-    xte = fs.transform(x_test)
-
-    # Run model comparison
-    print('\nScoring models...\n')
-    models = [
-        Baseline(),
-        # KNN(5),
-        KNeighborsClassifier(),
-        RandomForestClassifier(n_estimators=10),
-        BaggingClassifier(
-            KNeighborsClassifier(),
-            max_samples=0.5,
-            max_features=0.5
-        )
+        PolynomialRegression(2),
+        GradientBoostingRegressor(n_estimators=1000)
     ]
     data = [xtr, y_train, xte, y_test]
     run(
         models,
         data,
-        score_func=accuracy_score,
-        round=True,
-        optimization='maximum'
+        score_func=mean_squared_error,
+        round=False,
+        optimization='minimum'
     )
+
+
+def run_classification():
+    # Prepare data
+    data_train, x_train, y_train, x_test, y_test = _load('classification')
+    for k in [7]:
+        # Feature selection for classification on source data
+        print('Selecting {} features for classification...\n'.format(k))
+        fs = SelectKBest(score_func=chi2, k=k).fit(x_train, y_train)
+        for score, feature in sorted(zip(fs.scores_, data_train.columns))[-k:]:
+            print('{} ({:0.2f})'.format(feature, score))
+
+        # Select features
+        xtr = fs.transform(x_train)
+        xte = fs.transform(x_test)
+
+        # Run model comparison
+        print('\nScoring models...\n')
+        models = [
+            Baseline(),
+            # KNN(5),
+            KNeighborsClassifier(5),
+            LogisticRegression(
+                max_iter=10000,
+                solver='sag',
+                tol=1e-10,
+                class_weight='balanced'
+            ),
+            RandomForestClassifier(n_estimators=10),
+            BaggingClassifier(
+                KNeighborsClassifier(),
+                max_samples=0.5,
+                max_features=1.0
+            ),
+            SGDClassifier(loss='log')
+        ]
+        data = [xtr, y_train, xte, y_test]
+        run(
+            models,
+            data,
+            score_func=log_loss,
+            round=False,
+            optimization='minimum'
+        )
 
 
 if __name__ == '__main__':

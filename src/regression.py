@@ -1,6 +1,6 @@
 import numpy as np
 
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.preprocessing import PolynomialFeatures
 
 from gradient import gradient_descent, linear, sigmoid

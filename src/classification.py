@@ -1,5 +1,14 @@
 import numpy as np
 
+from sklearn.ensemble import (
+    BaggingClassifier,
+    GradientBoostingRegressor,
+    GradientBoostingClassifier,
+    RandomForestClassifier
+)
+from sklearn.linear_model import SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier
+
 
 def euclidean_distance(a, b):
     return np.dot(a - b, a - b)
