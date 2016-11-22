@@ -2,8 +2,11 @@
 \label{sec:two}
 
 We employ multiple different methods for the problems of feature selection,
-regression and classification.  All methods are tested against a baseline, which
-is given by the mean (argue).
+regression and classification. All methods are tested against a baseline. 
+
+In the following sections, we describe in details the baseline, feature selection methods, and models for each task. 
+
+ In classification task, baseline always returns the most probable class from the outcome of the training data for prediction. The return value of most probable class will be in the form of probability for that class if we use the logarithmic loss for measurement. And the return value will be class label if we use accuracy for measurement.
 
 \subsection{Feature Selection}
 
@@ -15,9 +18,38 @@ Select features based on highest scores:
 \end{itemize}
 
 \subsection{Regression}
+As mention in the problem description, in regression task we predict the number of ratings each review have based on words' counts in each review.
 
-Here, we implement linear regression with gradient descent and polynomial
-regression for a degree of 2.
+We have a baseline serves as a standard. The baseline always returns the mean of outcome of the training data for all new observations, i.e., the mean of rating all reviews in the training data.
+
+In order to compare with the baseline, we implement linear regression and the polynomial regression for a degree of 2. Both methods are solved by applying the estimate for the Ordinary Least Squares problem.
+
+\subsubsection{Linear Regression}
+Linear regression models the relationship between the explanatory variables $\mathbf{x}$ and the outcome $y$ by a linear function. Here, we find a linear relationship between multiple explanatory variables and outcome. This form of linear regression is called the multiple linear regression.
+
+The linear relationship can be written in the form below:
+\begin{equation*}
+y = \mathbf{x}^T\mathbf{w}
+\end{equation*}
+
+For this problem, the explanatory variables $\mathbf{x}$ is a vector of words' counts for each review. The outcome $y$ is the rating for each review. Weight vector $\mathbf{w}$ contains the weights associates with each word's counts in $\mathbf{x}$ to produce the desired outcome $y$.
+
+We have many reviews and ratings. One rating associate with one review. Let $\mathbf{X}$ is the matrix of which each row is a words' counts for one review. $y$ is the column vector of which each element is the rating (outcome) for the corresponding review. We can formulate the problem as follow:
+
+\begin{equation*}
+\mathbf{y} = \mathbf{X}^T\mathbf{w}
+\end{equation*}
+
+From here, we can apply the solution of the ordinary least square problem to find $\mathbf{w}$:
+\begin{equation*}
+\mathbf{w} = (X^TX)^{-1}X^Ty
+\end{equation*}
+
+\subsubsection{Polynomial Regression}
+Polynomial regression with degree 2 is the next model we try. We want to model the relationship between the explanatory variables and the outcome in a nonlinear way. Polynomial regression with degree 2 will expand the original set of features with the 2-way interaction between those features and a set of features power 2. Then we treat the new set of features as they are independent from each other and we can apply the ordinary least square solution.
+
+For example if we have feature vector $\mathbf{x} = (x_1, x_2)$. After we expanded the set of features by method described above, we have the new feature vector $\mathbf{x}^{'} = (1, x_1, x_2, x_1x_2, x_1^2, x_2^2)$.
+
 
 \subsection{Classification}
 
