@@ -3,25 +3,14 @@ import sys
 
 import numpy as np
 import pandas as pd
+import scipy as sp
 
 from sklearn.feature_selection import SelectKBest, f_regression, chi2
-from sklearn.metrics import accuracy_score, f1_score, log_loss
+from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import KFold, LeaveOneOut
 
-from classification import (
-    BaggingClassifier,
-    GradientBoostingRegressor,
-    KNeighborsClassifier,
-    KNN,
-    RandomForestClassifier,
-    SGDClassifier
-)
-from regression import (
-    LinearRegression,
-    LinearRegressionCustom,
-    LogisticRegression,
-    PolynomialRegression
-)
+from classification import KNeighborsClassifier, RandomForestClassifier
+from regression import LinearRegression, PolynomialRegression
 
 
 class Baseline(object):
@@ -107,6 +96,10 @@ def _score(x, y, model, score_func, cv=10, round=False):
 
 
 def log_bernoulli_loss(true, pred):
+    # Remove total values that result in infinity.
+    epsilon = 1e-15
+    pred = sp.maximum(epsilon, pred)
+    pred = sp.minimum(1-epsilon, pred)
     return -np.mean(true * np.log(pred) + (1 - true) * np.log(1 - pred))
 
 
@@ -114,7 +107,7 @@ def mean_squared_error(true, pred):
     return np.mean((pred - true) ** 2)
 
 
-def evaluate(x, model, name, round=False, negative=False):
+def evaluate(model, x, index, name, round=False, negative=False):
     """
     Evaluate predictions using input X and MODEL.  Optionally round values to
     0 decimals.  Always remove negative values when predicting count problems.
@@ -129,12 +122,12 @@ def evaluate(x, model, name, round=False, negative=False):
     if not negative:
         y[y < 0] = 0
 
-    y = pd.Series(y, index=x.index, name='vote')
+    y = pd.Series(y, index=index, name='rating')
     y.to_csv('../{}_submission.csv'.format(name), header=True)
 
 
 def run(models, data, score_func, name=None, submit=False, round=False,
-        optimization=None):
+        training=True):
     """
     Run model evaluation for MODELS and test the best fit.  Additionally, save
     CSV of test predictions for submission to Kaggle.
@@ -147,38 +140,29 @@ def run(models, data, score_func, name=None, submit=False, round=False,
     name : str
     submit : bool
     round : bool
-    optimization : str
+    training : bool
+        Evaluate model using cross-validation on training set, or train model
+        and report performance on test set.
 
     """
-    if optimization == 'maximum':
-        score_comp = op.lt
-    elif optimization == 'minimum':
-        score_comp = op.gt
-    else:
-        # raise NotImplementedError
-        # Default to minimum
-        score_comp = op.gt
+    results = pd.Series()
+    for (model, params) in models:
+        model_name = model.__class__.__name__
+        if params is not None:
+            model_name = '{}<{}>'.format(model_name, params)
 
-    topm = None
-    for model in models:
-        print('Validating    : {}'.format(model.__class__.__name__))
-        score = _score(data[0], data[1], model, score_func, round=round)
-        print('Score (train) : {}\n'.format(score))
-        if topm is None:
-            topm = (model, score)
-            continue
+        if training:
+            print('Validating {}…'.format(model_name))
+            score = _score(data[0], data[1], model, score_func, round=round)
+            print('Mean Score (CV): {}\n'.format(score))
+        else:
+            model.fit(*data[:2])
+            y_pred = model.predict(data[2])
+            y_pred = np.round(y_pred) if round else y_pred
+            score = score_func(data[3], y_pred)
+            print('Score (test)  : {}\n'.format(score))
 
-        if score_comp(topm[1], score):
-            topm = (model, score)
-
-    # Testing fit
-    model = topm[0]
-    model.fit(*data[:2])
-    y_pred = model.predict(data[2])
-    y_pred = np.round(y_pred) if round else y_pred
-    score = score_func(data[3], y_pred)
-    print('Best fit      : {}'.format(model.__class__.__name__))
-    print('Score (test)  : {}'.format(score))
+        results.set_value(model_name, score)
 
     # Kaggel:
     if submit:
@@ -187,50 +171,65 @@ def run(models, data, score_func, name=None, submit=False, round=False,
 
         evaluate(data[2], model, name)
 
+    return results
 
-def run_regression():
+
+def run_regression(num_features=None, training=True):
     # Prepare data
     data_train, x_train, y_train, x_test, y_test = _load('regression')
 
+    # Select all features by default
+    if num_features is None:
+        num_features = x_train.shape[1]
+
     # Feature selection for regression on source data
-    print('Selecting features for regression...\n')
-    k = 7
-    fs = SelectKBest(score_func=f_regression, k=k).fit(x_train, y_train)
-    for score, feature in sorted(zip(fs.scores_, data_train.columns))[-k:]:
-        print('{} ({:0.2f})'.format(feature, score))
+    results = pd.DataFrame()
+    for k in range(1, num_features + 1):
+        print('Selecting {} features for regression...\n'.format(k))
+        fs = SelectKBest(score_func=f_regression, k=k).fit(x_train, y_train)
+        for score, feature in sorted(zip(fs.scores_, data_train.columns))[-k:]:
+            print('{} ({:0.2f})'.format(feature, score))
 
-    # Select features
-    xtr = fs.transform(x_train)
-    xte = fs.transform(x_test)
+        # Select features
+        xtr = fs.transform(x_train)
+        xte = fs.transform(x_test)
 
-    # Add bias term
-    # xtr = np.append(np.ones((xtr.shape[0], 1)), xtr, axis=1)
-    # xte = np.append(np.ones((xte.shape[0], 1)), xte, axis=1)
+        # Add bias term
+        # xtr = np.append(np.ones((xtr.shape[0], 1)), xtr, axis=1)
+        # xte = np.append(np.ones((xte.shape[0], 1)), xte, axis=1)
 
-    # Run model comparison
-    print('\nScoring models...\n')
-    models = [
-        Baseline(),
-        LinearRegression(),
-        # LinearRegressionCustom(),
-        PolynomialRegression(1),
-        PolynomialRegression(2),
-        GradientBoostingRegressor(n_estimators=1000)
-    ]
-    data = [xtr, y_train, xte, y_test]
-    run(
-        models,
-        data,
-        score_func=mean_squared_error,
-        round=False,
-        optimization='minimum'
-    )
+        # Run model comparison
+        print('\nScoring models...\n')
+        models = [
+            (Baseline(), None),
+            (LinearRegression(), None),
+            (PolynomialRegression(2), 2),
+        ]
+        data = [xtr, y_train, xte, y_test]
+        scores = run(
+            models,
+            data,
+            score_func=mean_squared_error,
+            round=False,
+            training=True
+        )
+        scores.name = k
+        results = pd.concat([results, scores], axis=1)
+
+    return results.transpose()
 
 
-def run_classification():
+def run_classification(num_features=None):
     # Prepare data
     data_train, x_train, y_train, x_test, y_test = _load('classification')
-    for k in [7]:
+
+    # Select all features by default
+    if num_features is None:
+        num_features = x_train.shape[1]
+
+    # Feature selection for regression on source data
+    results = pd.DataFrame()
+    for k in range(1, num_features + 1):
         # Feature selection for classification on source data
         print('Selecting {} features for classification...\n'.format(k))
         fs = SelectKBest(score_func=chi2, k=k).fit(x_train, y_train)
@@ -244,31 +243,24 @@ def run_classification():
         # Run model comparison
         print('\nScoring models...\n')
         models = [
-            Baseline(),
-            # KNN(5),
-            KNeighborsClassifier(5),
-            LogisticRegression(
-                max_iter=10000,
-                solver='sag',
-                tol=1e-10,
-                class_weight='balanced'
-            ),
-            RandomForestClassifier(n_estimators=10),
-            BaggingClassifier(
-                KNeighborsClassifier(),
-                max_samples=0.5,
-                max_features=1.0
-            ),
-            SGDClassifier(loss='log')
+            (Baseline(), None),
+            (KNeighborsClassifier(1), 1),
+            (KNeighborsClassifier(5), 5),
+            (RandomForestClassifier(n_estimators=10), 10),
+            (RandomForestClassifier(n_estimators=50), 50),
         ]
         data = [xtr, y_train, xte, y_test]
-        run(
+        scores = run(
             models,
             data,
-            score_func=log_loss,
-            round=False,
-            optimization='minimum'
+            score_func=f1_score,
+            round=True,
+            training=True
         )
+        scores.name = k
+        results = pd.concat([results, scores], axis=1)
+
+    return results.transpose()
 
 
 if __name__ == '__main__':
@@ -279,5 +271,6 @@ if __name__ == '__main__':
             run_classification()
 
     else:
-        run_regression()
-        run_classification()
+        # run_regression()
+        # run_classification()
+        pass
