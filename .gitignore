@@ -102,3 +102,6 @@ auto
 
 # Intellij project settings
 .idea
+
+#texmaker
+*.synctex.gz
