@@ -4,7 +4,6 @@ import sys
 import numpy as np
 import pandas as pd
 import scipy as sp
-
 from sklearn.feature_selection import SelectKBest, f_regression, chi2
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import KFold, LeaveOneOut
@@ -53,6 +52,24 @@ def _load(task_name):
     )
     y_test = getattr(y_test, outcome).as_matrix()
     return data_train, x_train, y_train, x_test, y_test
+
+
+def _plot(data, filename, **params):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    sns.set_style('ticks')
+
+    xlabel = params.pop('xlabel', r'top $k$ features')
+    ylabel = params.pop('ylabel', r'score')
+    title = params.pop('title', r'Score for Top $k$ Features')
+
+    data.plot(**params)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title, fontweight='bold', y=1.02)
+    sns.despine(offset=0, trim=False)
+    plt.savefig('../doc/figures/{}'.format(filename), dpi=300)
 
 
 def _score(x, y, model, score_func, cv=10, round=False):
@@ -154,13 +171,14 @@ def run(models, data, score_func, name=None, submit=False, round=False,
         if training:
             print('Validating {}…'.format(model_name))
             score = _score(data[0], data[1], model, score_func, round=round)
-            print('Mean Score (CV): {}\n'.format(score))
+            print('Mean Score (CV): {}'.format(score))
         else:
+            print('Testing {}…'.format(model_name))
             model.fit(*data[:2])
             y_pred = model.predict(data[2])
             y_pred = np.round(y_pred) if round else y_pred
             score = score_func(data[3], y_pred)
-            print('Score (test)  : {}\n'.format(score))
+            print('Score (test)  : {}'.format(score))
 
         results.set_value(model_name, score)
 
@@ -211,21 +229,38 @@ def run_regression(num_features=None, training=True):
             data,
             score_func=mean_squared_error,
             round=False,
-            training=True
+            training=training
         )
+        print()  # Done
         scores.name = k
         results = pd.concat([results, scores], axis=1)
 
     return results.transpose()
 
 
-def run_classification(num_features=None):
+def run_classification(num_features=None, training=True, score_func=None):
     # Prepare data
     data_train, x_train, y_train, x_test, y_test = _load('classification')
 
     # Select all features by default
     if num_features is None:
         num_features = x_train.shape[1]
+
+    # Select default scoring function
+    if score_func is None:
+        score_func = 'accuracy'
+
+    if score_func == 'accuracy':
+        score_func = accuracy_score
+        round = True
+    elif score_func == 'f1_score':
+        score_func = f1_score
+        round = True
+    elif score_func == 'log_loss':
+        score_func = log_bernoulli_loss
+        round = False
+    else:
+        NotImplementedError
 
     # Feature selection for regression on source data
     results = pd.DataFrame()
@@ -254,9 +289,10 @@ def run_classification(num_features=None):
             models,
             data,
             score_func=f1_score,
-            round=True,
-            training=True
+            round=round,
+            training=training
         )
+        print()  # Done
         scores.name = k
         results = pd.concat([results, scores], axis=1)
 
