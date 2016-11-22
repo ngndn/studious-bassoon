@@ -288,7 +288,7 @@ def run_classification(num_features=None, training=True, score_func=None):
         scores = run(
             models,
             data,
-            score_func=f1_score,
+            score_func=score_func,
             round=round,
             training=training
         )
