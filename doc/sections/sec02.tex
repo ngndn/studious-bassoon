@@ -86,8 +86,16 @@ We implement a $k$-Nearest Neighbor ($k$-NN) classifier and compare its
 performance to the baseline and a random forest algorithm.
 
 \subsubsection{k-Nearest Neighbor (k-NN)}
+k-NN is a non-parametric classification method, i.e, k-NN takes the whole training data as a model and it will grow as the training data grows. For predicting label for new observation, k-NN first computes the distances between new observation and all observations in the training data. It then picks the top-k nearest observations and returns the majority label among them (or probability of the majority label).
+
+Since the k-NN takes all the training data to be the model, k-NN does not require training. However, we do need to choose the value of k for the model. The value of k is often chosen by running cross validation on the training data. Detail will be discussed in Experiments section.
 
 \subsubsection{Random Forest}
+Random Forest is an ensemble learning method which can be used for classification or regression task. Random forest does training by train many decision trees using different parts of the training data. This technique is also called bootstrap aggregating or bagging. Later, random forest will use those trees to make decision about new observation by averaging the results from trees.
+
+Decision tree is one of the popular and basic methods in machine learning. One problem in decision tree is that growing a very deep tree tends to fit noise in the training data. Deep tree has low bias but high variance. Averaging results from different trees training on different parts of the data, as in random forest, will reduce the variance.
+
+However, only applying bagging on multiple trees then averaging the result is not necessary reducing the variance if those trees are highly correlated. Random forest also applies a technique called feature bagging when training decision trees. With feature bagging, each tree will train on $m$ different features randomly selected (with replacement) from $M$ original features. This technique prevent a highly predictive feature in a training set appears many times in trees, preventing those trees to be highly correlated.
 
 %%% Local Variables:
 %%% mode: latex
