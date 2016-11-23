@@ -1,19 +1,13 @@
 \section{Introduction}
 \label{sec:one}
 
-We are provided with two data sets from
-Yelp\furl{https://www.yelp.com/dataset_challenge}.
+We are provided with two data sets from Yelp\furl{https://www.yelp.com/dataset_challenge}. One is for regression task. The other one is for classification. Both are reviews that have been transformed into word counts vector by Bag-of-Words model. There are 50 features in each word counts vector. 
 
-1.\ number of positive votes for reviews
-2.\ binary labels for low ($\leq 3$) and high ($>3$ stars) rating of reviews
+In regression task, we predict the number of positive votes for a review given a word counts. For classification task, we use word counts vector to distinguish (binary) labels for low ($\leq 3$) and high ($>3$ stars) rating of reviews.
 
-Given the large number of features, we\ldots
+Given the large number of features, we also apply feature selection methods. Different techniques are used for the different tasks.
 
-Regression to predict the number of positive votes for a review given a word
-counts.
-
-Classification (binary) to distinguish between differently rated (low vs.\ high)
-reviews.
+For both task, we try to overcome the naive baseline with simple approaches before using a more complicated one. After all, we can surpass the naive baseline with simple models, except for classification.
 
 The methods and experiments are detailed in Section~\ref{sec:two}
 and~\ref{sec:three} respectively.
