@@ -1,19 +1,25 @@
 \section{Introduction}
 \label{sec:one}
 
-Paragraphs detailing the regression and classification problems, as well as an
-overview of the Yelp data set go here.
+We are provided with two data sets from
+Yelp\furl{https://www.yelp.com/dataset_challenge}.
 
-We implement feature selection methods, regression and classification algorithms
-to produce accurate predictions for the Yelp data set.  The methods and
-experiments are detailed in Section~\ref{sec:two} and \ref{sec:three}
-respectively.  A complete list of all the features used for each task is
+1.\ number of positive votes for reviews
+2.\ binary labels for low ($\leq 3$) and high ($>3$ stars) rating of reviews
+
+Given the large number of features, we\ldots
+
+Regression to predict the number of positive votes for a review given a word
+counts.
+
+Classification (binary) to distinguish between differently rated (low vs.\ high)
+reviews.
+
+The methods and experiments are detailed in Section~\ref{sec:two}
+and~\ref{sec:three} respectively.
+
+A complete list of all the features used for each task is
 detailed in Appendix~\ref{app:feature-list}.
-
-\subsection{The Data}
-
-Yelp review data: 1.\ positive votes for reviews and 2.\ review scores between 1
-and 5.
 
 %%% Local Variables:
 %%% mode: latex
