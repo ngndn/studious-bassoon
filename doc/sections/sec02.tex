@@ -9,12 +9,24 @@ In the following sections we describe these methods in detail.
 
 \subsection{Feature Selection}
 
-Select features based on highest scores:
+The data set contains a large number of vectors with counts for presumably
+relevant words.  This relevancy can be quantified based on univariate
+statistical tests.  We utilize two different feature scoring functions:
 
-\begin{itemize}
-\item f\_regression (F-value between label/feature for regression tasks)
-\item chi2 (Chi-squared stats of non-negative features for classification tasks)
-\end{itemize}
+\begin{description}
+\item[Linear Regression Test] Fast linear model, which computes the cross
+  correlation between each regressor and the target outcome, and converting the
+  result to F-values.
+\item[Chi-Squared Test] Compute $\chi^2$ statistics for all features,
+  indicating the discriminate power of each.
+\end{description}
+
+The above tests provide a list of scores for all 50 features for the regression
+and classification tasks, respectively.  These lists, when sorted, comprise the
+top-$k$ sets used to evaluate the model performance in our experiment.  Before
+fitting each model to the individual data, we select the top-$k$ features ($k =
+\{1, \ldots, 50\}$), and discard the rest.  This process is explained in more
+detail in Section~\ref{sec:three}.
 
 \subsection{Regression}
 
