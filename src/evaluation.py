@@ -222,7 +222,7 @@ def run_regression(num_features=None, training=True):
         logger.info('\nScoring models...\n')
         models = [
             (Baseline(), None),
-            (LinearRegression(), None),
+            (LinearRegression(), None),  # same as PolyRegr(1), no name clash
             (PolynomialRegression(2), 2),
         ]
         data = [xtr, y_train, xte, y_test]
@@ -281,8 +281,8 @@ def run_classification(num_features=None, training=True, score_func=None):
         logger.info('\nScoring models...\n')
         models = [
             (Baseline(), None),
-            (KNeighborsClassifier(1), 1),
-            (KNeighborsClassifier(5), 5),
+            (KNeighborsClassifier(1), 1),  # same as KNN(1), but faster
+            (KNeighborsClassifier(5), 5),  # same as KNN(5), but faster
             (RandomForestClassifier(n_estimators=10), 10),
             (RandomForestClassifier(n_estimators=50), 50),
         ]
