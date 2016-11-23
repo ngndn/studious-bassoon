@@ -1,4 +1,4 @@
-import operator as op
+import logging
 import sys
 
 import numpy as np
@@ -10,6 +10,8 @@ from sklearn.model_selection import KFold, LeaveOneOut
 
 from classification import KNeighborsClassifier, RandomForestClassifier
 from regression import LinearRegression, PolynomialRegression
+
+logger = logging.getLogger()
 
 
 class Baseline(object):
@@ -169,16 +171,16 @@ def run(models, data, score_func, name=None, submit=False, round=False,
             model_name = '{}<{}>'.format(model_name, params)
 
         if training:
-            print('Validating {}…'.format(model_name))
+            logger.info('Validating {}…'.format(model_name))
             score = _score(data[0], data[1], model, score_func, round=round)
-            print('Mean Score (CV): {}'.format(score))
+            logger.info('Mean Score (CV): {}'.format(score))
         else:
-            print('Testing {}…'.format(model_name))
+            logger.info('Testing {}…'.format(model_name))
             model.fit(*data[:2])
             y_pred = model.predict(data[2])
             y_pred = np.round(y_pred) if round else y_pred
             score = score_func(data[3], y_pred)
-            print('Score (test)  : {}'.format(score))
+            logger.info('Score (test)  : {}'.format(score))
 
         results.set_value(model_name, score)
 
@@ -203,10 +205,10 @@ def run_regression(num_features=None, training=True):
     # Feature selection for regression on source data
     results = pd.DataFrame()
     for k in range(1, num_features + 1):
-        print('Selecting {} features for regression...\n'.format(k))
+        logger.info('Selecting {} features for regression...\n'.format(k))
         fs = SelectKBest(score_func=f_regression, k=k).fit(x_train, y_train)
         for score, feature in sorted(zip(fs.scores_, data_train.columns))[-k:]:
-            print('{} ({:0.2f})'.format(feature, score))
+            logger.info('{} ({:0.2f})'.format(feature, score))
 
         # Select features
         xtr = fs.transform(x_train)
@@ -217,7 +219,7 @@ def run_regression(num_features=None, training=True):
         # xte = np.append(np.ones((xte.shape[0], 1)), xte, axis=1)
 
         # Run model comparison
-        print('\nScoring models...\n')
+        logger.info('\nScoring models...\n')
         models = [
             (Baseline(), None),
             (LinearRegression(), None),
@@ -231,7 +233,7 @@ def run_regression(num_features=None, training=True):
             round=False,
             training=training
         )
-        print()  # Done
+        logger.info('\n')  # Done
         scores.name = k
         results = pd.concat([results, scores], axis=1)
 
@@ -266,17 +268,17 @@ def run_classification(num_features=None, training=True, score_func=None):
     results = pd.DataFrame()
     for k in range(1, num_features + 1):
         # Feature selection for classification on source data
-        print('Selecting {} features for classification...\n'.format(k))
+        logger.info('Selecting {} features for classification...\n'.format(k))
         fs = SelectKBest(score_func=chi2, k=k).fit(x_train, y_train)
         for score, feature in sorted(zip(fs.scores_, data_train.columns))[-k:]:
-            print('{} ({:0.2f})'.format(feature, score))
+            logger.info('{} ({:0.2f})'.format(feature, score))
 
         # Select features
         xtr = fs.transform(x_train)
         xte = fs.transform(x_test)
 
         # Run model comparison
-        print('\nScoring models...\n')
+        logger.info('\nScoring models...\n')
         models = [
             (Baseline(), None),
             (KNeighborsClassifier(1), 1),
@@ -292,7 +294,7 @@ def run_classification(num_features=None, training=True, score_func=None):
             round=round,
             training=training
         )
-        print()  # Done
+        logger.info('\n')  # Done
         scores.name = k
         results = pd.concat([results, scores], axis=1)
 
