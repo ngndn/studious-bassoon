@@ -4,7 +4,8 @@
 We employ multiple different methods for the problems of feature selection,
 regression and classification. All methods are tested against a baseline. 
 
-In the following sections, we describe in details the baseline, feature selection methods, and models for each task. 
+In the following sections we describe in detail the baseline, feature selection
+methods, and models for each task.
 \subsection{Feature Selection}
 
 Select features based on highest scores:
@@ -17,45 +18,68 @@ Select features based on highest scores:
 \subsection{Regression}
 In this section, we discuss methods applied to solve the regression task.
 
-We choose a function that always returns the mean of outcomes in the training data for all observations, i.e., the mean of number of votes in the training data as a baseline.
+We choose a function that always returns the mean of outcomes in the training
+data for all observations, i.e., the mean of number of votes in the training
+data as a baseline.
 
-In order to compare with the baseline, we implement linear regression and the polynomial regression of degree 2. Both methods are solved by applying the solution of the Ordinary Least Squares problem.
+In order to compare with the baseline, we implement linear regression and the
+polynomial regression of degree 2. Both methods are solved by applying the
+solution of the Ordinary Least Squares problem.
 
 \subsubsection{Linear Regression}
-Linear regression models the relationship between the feature(s) and the outcome by a linear function. Here, we will find a linear relationship between a vector of words' counts (features) and the number of votes (outcome). 
+Linear regression models the relationship between the feature(s) and the outcome
+by a linear function. Here, we will find a linear relationship between a vector
+of words' counts (features) and the number of votes (outcome).
 
 The linear relationship can be written in the form below:
-\begin{equation*}
-y = \mathbf{x}^T\mathbf{w}
-\end{equation*}
+\[
+  y = \mathbf{x}^T\mathbf{w}
+\]
 
-Weight vector $\mathbf{w}$ contains the weight associates with each feature in $\mathbf{x}$ to produce the desired $y$.
+Weight vector $\mathbf{w}$ contains the weight associates with each feature in
+$\mathbf{x}$ to produce the desired $y$.
 
-And because we want to model the relationship expressed by the training data, the reviews (words' counts vector) can be written as matrix $\mathbf{X}$ of which row is feature vector for each review. And votes for reviews can be written as column vector $\mathbf{y}$ of which element is the vote. Then we can formalize the relationship as: 
+And because we want to model the relationship expressed by the training data,
+the reviews (words' counts vector) can be written as matrix $\mathbf{X}$ of
+which row is feature vector for each review. And votes for reviews can be
+written as column vector $\mathbf{y}$ of which element is the vote. Then we can
+formalize the relationship as:
+\[
+  \mathbf{y} = \mathbf{X}^T \mathbf{w}
+\]
 
-\begin{equation*}
-\mathbf{y} = \mathbf{X}^T\mathbf{w}
-\end{equation*}
-
-From here, we can apply the solution of the Ordinary Least Square problem to find $\mathbf{w}$:
-\begin{equation*}
-\mathbf{w} = (X^TX)^{-1}X^Ty
-\end{equation*}
+From here, we can apply the solution of the Ordinary Least Square problem to
+find $\mathbf{w}$:
+\[
+  \mathbf{w} = {(X^T X)}^{-1} X^T y
+\]
 
 \subsubsection{Polynomial Regression}
-Polynomial regression of degree 2 is the next model we try since we want to model the relationship between the  features and the outcome in a nonlinear way. Polynomial regression with degree 2 will expand the original set of features with the 2-way 
-interaction between those features and a set of features in power 2. The 2-way interaction features and features in power 2 will help to model the nonlinear relationship.
+Polynomial regression of degree 2 is the next model we try since we want to
+model the relationship between the features and the outcome in a nonlinear
+way. Polynomial regression with degree 2 will expand the original set of
+features with the 2-way interaction between those features and a set of features
+in power 2. The 2-way interaction features and features in power 2 will help to
+model the nonlinear relationship.
 
-For example, if we have feature vector $\mathbf{x} = (x_1, x_2)$. After we expanded the set of features by method described above, we have a new feature vector $\mathbf{x}^{'} = (x_1, x_2, x_1x_2, x_1^2, x_2^2)$.
+For example, if we have feature vector $\mathbf{x} = (x_1, x_2)$. After we
+expanded the set of features by method described above, we have a new feature
+vector $\mathbf{x}^{'} = (x_1, x_2, x_1x_2, x_1^2, x_2^2)$.
 
-Then we treat the new set of features as they are independent from each other and apply the solution of the Ordinary Least Square solution.
+Then we treat the new set of features as they are independent from each other
+and apply the solution of the Ordinary Least Square solution.
 
 \subsection{Classification}
 This section discuss the methods applied in classification task.
 
-For this task, the chosen baseline is a function which always returns the value related to most probable class in the outcomes of the training data. When using logarithmic loss as a measurement function, the value is the probability of the most probable class. When using accuracy or related measurement functions (such as F-score), the value is the label of the most probable class.
+For this task, the chosen baseline is a function which always returns the value
+related to most probable class in the outcomes of the training data. When using
+logarithmic loss as a measurement function, the value is the probability of the
+most probable class. When using accuracy or related measurement functions (such
+as F-score), the value is the label of the most probable class.
 
-We also use k-Nearest Neighbor (k-NN) and Random Forest to compare with the baseline.
+We also use k-Nearest Neighbor (k-NN) and Random Forest to compare with the
+baseline.
 
 \subsubsection{k-Nearest Neighbor (k-NN)}
 
