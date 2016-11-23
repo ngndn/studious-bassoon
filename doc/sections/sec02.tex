@@ -2,10 +2,11 @@
 \label{sec:two}
 
 We employ multiple different methods for the problems of feature selection,
-regression and classification. All methods are tested against a baseline. 
+regression and classification.  Models for the latter two tasks are tested
+against a separate baseline.
 
-In the following sections we describe in detail the baseline, feature selection
-methods, and models for each task.
+In the following sections we describe these methods in detail.
+
 \subsection{Feature Selection}
 
 Select features based on highest scores:
@@ -16,70 +17,73 @@ Select features based on highest scores:
 \end{itemize}
 
 \subsection{Regression}
+
 In this section, we discuss methods applied to solve the regression task.
 
-We choose a function that always returns the mean of outcomes in the training
-data for all observations, i.e., the mean of number of votes in the training
-data as a baseline.
+We choose a function as a baseline that always returns the mean of outcomes in
+the training data for all observations, i.e., the mean of a number of votes in
+the training data.
 
-In order to compare with the baseline, we implement linear regression and the
-polynomial regression of degree 2. Both methods are solved by applying the
-solution of the Ordinary Least Squares problem.
+In order to compare to and improve the baseline performance, we implement linear
+regression and polynomial regression of degree two.  Both methods are solved by
+applying the solution of the ordinary least squares (OLS) problem.
 
 \subsubsection{Linear Regression}
-Linear regression models the relationship between the feature(s) and the outcome
-by a linear function. Here, we will find a linear relationship between a vector
-of words' counts (features) and the number of votes (outcome).
 
-The linear relationship can be written in the form below:
+Linear regression models the relationship between the features and the outcome
+using a linear function; in this case a linear relationship between vectors of
+word counts (features) and the number of votes (outcome).  This relationship can
+be expressed as
 \[
   y = \mathbf{x}^T\mathbf{w}
 \]
 
-Weight vector $\mathbf{w}$ contains the weight associates with each feature in
-$\mathbf{x}$ to produce the desired $y$.
+The weight vector $\mathbf{w}$ contains the weight associated with each feature
+in $\mathbf{x}$ to predict an outcome $y$.
 
-And because we want to model the relationship expressed by the training data,
-the reviews (words' counts vector) can be written as matrix $\mathbf{X}$ of
-which row is feature vector for each review. And votes for reviews can be
-written as column vector $\mathbf{y}$ of which element is the vote. Then we can
-formalize the relationship as:
+As we want to model the relationship provided by the training data, the reviews
+(word count column vectors) can be written as a matrix $\mathbf{X}$, where in
+turn each row is a vector of features describing a single review.  The number of
+votes for each review can be written as a column vector $\mathbf{y}$.  We
+formalize the relationship as
 \[
   \mathbf{y} = \mathbf{X}^T \mathbf{w}
 \]
 
-From here, we can apply the solution of the Ordinary Least Square problem to
-find $\mathbf{w}$:
+Consequently, we apply the OLS method to find a solution for the weight vector
+$\mathbf{w}$.
 \[
-  \mathbf{w} = {(X^T X)}^{-1} X^T y
+  \mathbf{w} = {(\mathbf{X}^T \mathbf{X})}^{-1} \mathbf{X}^T \mathbf{y}
 \]
 
 \subsubsection{Polynomial Regression}
-Polynomial regression of degree 2 is the next model we try since we want to
-model the relationship between the features and the outcome in a nonlinear
-way. Polynomial regression with degree 2 will expand the original set of
-features with the 2-way interaction between those features and a set of features
-in power 2. The 2-way interaction features and features in power 2 will help to
-model the nonlinear relationship.
 
-For example, if we have feature vector $\mathbf{x} = (x_1, x_2)$. After we
-expanded the set of features by method described above, we have a new feature
-vector $\mathbf{x}^{'} = (x_1, x_2, x_1x_2, x_1^2, x_2^2)$.
+Polynomial regression provides a model, where the relationship between the
+features and the outcome is nonlinear.  Polynomial regression with degree two
+expands the original set of features with the two-way interaction between those
+features and a set of features with a power of two.  This interaction of
+features improves modeling the nonlinear relationship.
 
-Then we treat the new set of features as they are independent from each other
-and apply the solution of the Ordinary Least Square solution.
+For example, given a feature vector $\mathbf{x} = (x_1, x_2)$, after expanding
+the set of features as described above, our new feature vector becomes
+$\mathbf{x}^{'} = (x_1, x_2, x_1x_2, x_1^2, x_2^2)$.
+
+We treat the new set of features as if they were independent from each other
+and apply the OLS method to estimate the outcome.
 
 \subsection{Classification}
-This section discuss the methods applied in classification task.
 
-For this task, the chosen baseline is a function which always returns the value
-related to most probable class in the outcomes of the training data. When using
-logarithmic loss as a measurement function, the value is the probability of the
-most probable class. When using accuracy or related measurement functions (such
-as F-score), the value is the label of the most probable class.
+This section is concerned with the methods applied in the classification task.
 
-We also use k-Nearest Neighbor (k-NN) and Random Forest to compare with the
-baseline.
+We chose as a baseline a function, which always predicts the majority label,
+that is, the label for the most probable class in the outcomes of the training
+data.  When using a logarithmic loss as a measurement function, the value is the
+probability of the most probable class.  Alternatively, when using other scoring
+functions such as accuracy or \fmeasure, the value becomes the label of the most
+probable class.
+
+We implement a $k$-Nearest Neighbor ($k$-NN) classifier and compare its
+performance to the baseline and a random forest algorithm.
 
 \subsubsection{k-Nearest Neighbor (k-NN)}
 
