@@ -1,18 +1,64 @@
-\section{Experiments}
+\section{Experiment}
 \label{sec:three}
 
-Outcome of success as measured against the baseline.
+In the following section, we lay out the framework we built to evaluate the
+models, as well as the latter's implementation and parameter selection.  In
+addition, we briefly highlight the measures used to derive the test scores.
 
 \subsection{Framework}
 
-Discuss implementation details, models, libraries (scikit-learn by
-\citet{sklearn:2011}), cross validation setting, etc.
+The framework is built using Python 3.5.2 and the standard PyData libraries
+NumPy\furl{http://www.numpy.org/}, pandas\furl{http://pandas.pydata.org/} and
+scikit-learn\furl{http://scikit-learn.org} (by \citet{sklearn:2011}).  The data
+visualization routines utilize matplotlib\furl{http://matplotlib.org/} and
+seaborn\furl{http://seaborn.pydata.org/}.
 
-Linear regression, polynomial regression, etc.
+We start with a general outline for implementing models, objects that require a
+\texttt{fit} and \texttt{predict} interface, as shown in Listing~\ref{lst:base}.
+For this experiment, we implement linear and polynomial regression models, as
+well as the $k$-Nearest Neighbors algorithm ourselves, and borrow the random
+forest model from scikit-learn.
+
+\lstset{
+  caption={\texttt{fit} and \texttt{predict} methods for the baseline model.},
+  label={lst:base}
+}
+\begin{lstlisting}
+def fit(self, x, y):
+    self._model = numpy.mean(y)
+
+def predict(self, x):
+    return numpy.full(
+        x.shape[0],
+        self._model
+    )
+\end{lstlisting}
+
+We continue with implementing general means to import and transform the data for
+regression and classification tasks, followed by creating facilities to score
+each model either on the training or test data set.  For the former the model is
+trained and evaluated using (optionally) different cross-validation (CV)
+algorithms, with 10-fold CV as the default.  The final reported score is the
+average of all scores computed by training a given model and measuring its
+performance on each of the 10 splits.  Whereas testing a model is done using the
+full training data for the fitting phase.  Scores are evaluated with the
+provided test data sets.
+
+As a final step, we build the pipeline to automate feature selection and model
+evaluation, given a set of models, their respective hyper parameters and a
+scoring function.  The entire implementation can be found on
+GitHub\furl{https://github.com/cfricke/studious-bassoon}.
 
 \subsection{Model Parameters}
 
-Polynomial regression, $k$-NN and random forests.
+As outlined in Section~\ref{sec:two}, we choose to evaluate several models that
+require hyper parameters.  For the polynomial regression, we opt for degree two,
+as higher degrees are too inefficient when considering all feature interactions
+and the entire sample space; the required memory exceeds our availability.
+
+We test $k$-NN with 1 and 5 neighbors, and chose 10 and 50 trees for two random
+forest models as a proxy for marginal comparison and to keep the running time of
+evaluating 50 different subsets of features manageable.  The performance of 
 
 \subsection{Evaluation Measures}
 

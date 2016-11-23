@@ -14,10 +14,10 @@ relevant words.  This relevancy can be quantified based on univariate
 statistical tests.  We utilize two different feature scoring functions:
 
 \begin{description}
-\item[Linear Regression Test] Fast linear model, which computes the cross
-  correlation between each regressor and the target outcome, and converting the
-  result to F-values.
-\item[Chi-Squared Test] Compute $\chi^2$ statistics for all features,
+\item[Linear Regression Test] A linear model, which computes the cross correlation
+  between each regressor and the target outcome, and converting the result to
+  F-values.
+\item[Chi-Squared Test] Computes $\chi^2$ statistics for all features,
   indicating the discriminate power of each.
 \end{description}
 
@@ -109,7 +109,7 @@ is returned.
 Since $k$-NN considers all training data when predicting a label, it does not
 require model fitting (training).  However, we need to pick the value of $k$ for
 the model.  Here $k$ is the hyper parameter of the model.  The value of $k$ is
-often chosen by running cross validation on the training data, which we discuss
+often chosen by running cross-validation on the training data, which we discuss
 in detail in secion~\ref{sec:three}.
 
 \subsubsection{Random Forest}
@@ -121,7 +121,7 @@ also known as bootstrap aggregating or bagging.  After training, the model
 utilizes the trees to choose a label for a new observations by averaging the
 results from trees.
 
-A decision tree is a basic, popular model in machine learning.  A major problem
+A decision tree is a popular basic model in machine learning.  A major problem
 with decision trees is that growing a very deep tree tends to fit noise in the
 training data.  Deep trees have low bias but high variance.  Averaging results
 from different trees, which are trained on different data set samples (like in
