@@ -97,17 +97,43 @@ probable class.
 We implement a $k$-Nearest Neighbor ($k$-NN) classifier and compare its
 performance to the baseline and a random forest algorithm.
 
-\subsubsection{k-Nearest Neighbor (k-NN)}
-k-NN is a non-parametric classification method, i.e, k-NN takes the whole training data as a model and it will grow as the training data grows. For predicting label for new observation, k-NN first computes the distances between new observation and all observations in the training data. It then picks the top-k nearest observations and returns the majority label among them (or probability of the majority label).
+\subsubsection{$k$-Nearest Neighbor ($k$-NN)}
 
-Since the k-NN takes all the training data to be the model, k-NN does not require training. However, we do need to choose the value of k for the model. The value of k is often chosen by running cross validation on the training data. Detail will be discussed in Experiments section.
+$k$-NN is a non-parametric classification method, i.e, it takes the whole
+training data as a model and grows with increasing data.  For predicting a label
+for a new observation, $k$-NN first computes the distances between that
+observation and all observations in the training data.  Then, from the top-$k$
+nearest observations the majority label (or probability of the majority label)
+is returned.
+
+Since $k$-NN considers all training data when predicting a label, it does not
+require model fitting (training).  However, we need to pick the value of $k$ for
+the model.  Here $k$ is the hyper parameter of the model.  The value of $k$ is
+often chosen by running cross validation on the training data, which we discuss
+in detail in secion~\ref{sec:three}.
 
 \subsubsection{Random Forest}
-Random Forest is an ensemble learning method which can be used for classification or regression task. Random forest does training by train many decision trees using different parts of the training data. This technique is also called bootstrap aggregating or bagging. Later, random forest will use those trees to make decision about new observation by averaging the results from trees.
 
-Decision tree is one of the popular and basic methods in machine learning. One problem in decision tree is that growing a very deep tree tends to fit noise in the training data. Deep tree has low bias but high variance. Averaging results from different trees training on different parts of the data, as in random forest, will reduce the variance.
+Random forest is an ensemble learning method, which can be used for
+classification or regression tasks.  Model fitting is done by training many
+decision trees using random samples from the training data.  This technique is
+also known as bootstrap aggregating or bagging.  After training, the model
+utilizes the trees to choose a label for a new observations by averaging the
+results from trees.
 
-However, only applying bagging on multiple trees then averaging the result is not necessary reducing the variance if those trees are highly correlated. Random forest also applies a technique called feature bagging when training decision trees. With feature bagging, each tree will train on $m$ different features randomly selected (with replacement) from $M$ original features. This technique prevent a highly predictive feature in a training set appears many times in trees, preventing those trees to be highly correlated.
+A decision tree is a basic, popular model in machine learning.  A major problem
+with decision trees is that growing a very deep tree tends to fit noise in the
+training data.  Deep trees have low bias but high variance.  Averaging results
+from different trees, which are trained on different data set samples (like in
+random forests) reduces the variance.
+
+However, applying bagging on multiple trees and averaging the results does not
+necessarily reduce high variance, if these trees are highly correlated.  Random
+forest additionally employs feature bagging during the training.  Here, each
+tree will train on $m$ randomly selected features (with replacement) from the
+original set of $M$ features.  This effectively reduces number of times highly
+predictive features appear in the trained trees, preventing high correlation
+between them.
 
 %%% Local Variables:
 %%% mode: latex
