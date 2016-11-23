@@ -5,14 +5,14 @@ Show off performance characteristics for each method using f-measure, MSE and
 Log-Bernoulli Loss in a table, like this~\ref{tab:regperf}, for example.
 
 \begin{table}[t]
-  \caption{Regression performance comparison of baseline (1), linear regression
-    (2) and polynomial regression of degree two (2) as measured using the mean
-    squared error on the test data set.}
+  \caption{Regression performance comparison of (1) baseline, (2) linear
+    regression and (3) polynomial regression of degree two as measured using the
+    mean squared error on the test data set.}
   % \centering\small
   % \renewcommand{\tabcolsep}{1pt}
   \newcolumntype{C}{>{\centering\arraybackslash}X}%
   % \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
-  \begin{tabularx}{\linewidth}{@{}cCc@{}}
+  \begin{tabularx}{\linewidth}{@{\kern3pt}cCc@{\kern3pt}}
     \toprule
     \bfseries Model & \bfseries Top-$k$ Features & \bfseries MSE \\
     \midrule
@@ -25,14 +25,14 @@ Log-Bernoulli Loss in a table, like this~\ref{tab:regperf}, for example.
 \end{table}
 
 \begin{table}[t]
-  \caption{Classification performance comparison of baseline (1), KNN with 1
-    (2) and 5 neighbours (3), random forest with 10 (4) and 50 (5) decision
-    trees as measured using the \fmeasure{} on the test data set.}
+  \caption{Classification performance comparison of (1) baseline, KNN with (2) 1
+    and (3) 5 neighbours, random forest with (4) 10 and (5) 50 decision trees as
+    measured using the \fmeasure{} on the test data set.}
   % \centering\small
   % \renewcommand{\tabcolsep}{1pt}
   \newcolumntype{C}{>{\centering\arraybackslash}X}%
   % \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
-  \begin{tabularx}{\linewidth}{@{}cCc@{}}
+  \begin{tabularx}{\linewidth}{@{\kern3pt}cCc@{\kern3pt}}
     \toprule
     \bfseries Model & \bfseries Top-$k$ Features & \bfseries \fmeasure{} \\
     \midrule
@@ -45,6 +45,20 @@ Log-Bernoulli Loss in a table, like this~\ref{tab:regperf}, for example.
   \end{tabularx}
 \label{tab:clsperf}
 \end{table}
+
+\begin{figure*}[h]
+\centering
+\begin{minipage}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/reg_mse_train.png}
+\end{minipage}
+\begin{minipage}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{figures/cls_fscore_train.png}
+\end{minipage}
+\caption{}
+\label{fig:training}
+\end{figure*}
 
 %%% Local Variables:
 %%% mode: latex
