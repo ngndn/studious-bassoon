@@ -5,7 +5,7 @@ We employ multiple different methods for the problems of feature selection,
 regression and classification.  Models for the latter two tasks are tested
 against a separate baseline.
 
-In the following sections we describe these methods in detail.
+In the following section we describe these methods in detail.
 
 \subsection{Feature Selection}
 
@@ -46,6 +46,7 @@ Linear regression models the relationship between the features and the outcome
 using a linear function; in this case a linear relationship between vectors of
 word counts (features) and the number of votes (outcome).  This relationship can
 be expressed as
+
 \[
   y = \mathbf{x}^T\mathbf{w}
 \]
@@ -58,12 +59,14 @@ As we want to model the relationship provided by the training data, the reviews
 turn each row is a vector of features describing a single review.  The number of
 votes for each review can be written as a column vector $\mathbf{y}$.  We
 formalize the relationship as
+
 \[
   \mathbf{y} = \mathbf{X}^T \mathbf{w}
 \]
 
 Consequently, we apply the OLS method to find a solution for the weight vector
 $\mathbf{w}$.
+
 \[
   \mathbf{w} = {(\mathbf{X}^T \mathbf{X})}^{-1} \mathbf{X}^T \mathbf{y}
 \]

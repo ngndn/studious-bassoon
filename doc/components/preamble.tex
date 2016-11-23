@@ -6,7 +6,7 @@
   fontsize=12pt,
   pagesize=pdftex,
   paper=A4,
-  parskip=half,
+  parskip=never,
   twocolumn
   ]{scrartcl}
 
@@ -18,19 +18,19 @@
 \setkomafont{captionlabel}{\normalfont\bfseries}
 \setkomafont{pageheadfoot}{\normalfont\sffamily}
 \setkomafont{section}{\large}
-\setlength{\parskip}{0em}
+% \setlength{\parskip}{0em}
 
 % \renewcommand*{\sectionformat}{}
 % \renewcommand*{\subsectionformat}{}
 \RedeclareSectionCommand[
-  beforeskip=-\baselineskip,
-  afterskip=.2\baselineskip]{section}
+  beforeskip=-1.25\baselineskip,
+  afterskip=.3\baselineskip]{section}
+\RedeclareSectionCommand[
+  beforeskip=-.75\baselineskip,
+  afterskip=.2\baselineskip]{subsection}
 \RedeclareSectionCommand[
   beforeskip=-.5\baselineskip,
-  afterskip=.1\baselineskip]{subsection}
-\RedeclareSectionCommand[
-  beforeskip=-.25\baselineskip,
-  afterskip=.05\baselineskip]{subsubsection}
+  afterskip=.15\baselineskip]{subsubsection}
 
 %% algorithms
 \usepackage[]{algpseudocode}
