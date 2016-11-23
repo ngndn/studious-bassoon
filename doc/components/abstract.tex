@@ -1,3 +1,18 @@
 \begin{abstract}
-  One paragraph regarding this report.
+  Provided with a data set of word counts for review texts, we develop a
+  framework to accurately predict positive review votes and identify highly
+  rated reviews.  Given these two tasks, we optimize our models for both
+  problems by evaluating performance characteristics on growing subsets of
+  top-$k$ features.
+
+  We select subsets of features using univariate statistical tests before
+  fitting our models and compare our results to two naive baselines.  In case of
+  the regression problem, our implementation significantly outperforms the
+  baseline.  However, for the classification task we show that more advanced
+  models barely beat the naive baseline.
 \end{abstract}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
