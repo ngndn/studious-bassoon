@@ -3,38 +3,84 @@
 \subsection{Feature List}
 \label{app:feature-list}
 
-% \setlength\LTleft{0pt}
-% \setlength\LTright{0pt}
-% \setlength\LTcapwidth{\textwidth}
-% \newcolumntype{L}{>{\raggedright\arraybackslash}p{0.6\textwidth}}
-% \newcolumntype{R}{>{\raggedleft\arraybackslash}p{0.335\textwidth}}
-% \begin{longtable}{@{}>{\small}l@{\kern4pt}>{\small}L>{\small}R@{}}
-%   \caption{A complete list of features selection scores for the regression
-%     (linear regression test) and the classification ($\chi^2$ test) tasks.}
-%   \label{tab:features-list}
-%   \toprule
-%   \multicolumn{2}{@{}>{\small}l@{}}{\textbf{Feature}} & \textbf{Reference} \\
-%   \midrule
-%   % \endfirsthead
-
-%   \multicolumn{3}{@{}>{\small}c@{}}{\tablename\ \thetable{} (continued)} \\[0.5em]
-%   \toprule
-%   \multicolumn{2}{@{}>{\small}l@{}}{\textbf{Feature}} & \textbf{Reference} \\
-%   \midrule
-%   % \endhead
-
-%   \hline
-%   \multicolumn{3}{@{}>{\small}r@{}}{\small continued on next page} \\
-%   % \endfoot
-
-%   \bottomrule
-%   % \endlastfoot
-
-%   \multicolumn{3}{@{}>{\small}l@{}}{\itshape Derived from Content.} \\
-%   & Automated Readability Index & sup \\
-%   & Auxiliary verb rate & sup \\
-% \end{longtable}
-
+\setlength\LTleft{0pt}
+\setlength\LTright{0pt}
+\setlength\LTcapwidth{\textwidth}
+% \newcolumntype{d}{S[table-format=4.4]}
+% \newcolumntype{d}[1]{D{.}{.}{#1}}
+\begin{longtable}{@{\extracolsep{\fill}\kern3pt}
+    l@{\kern-25pt}r
+    l@{\kern25pt} r@{\kern3pt}}
+  \caption{A complete list of features selection scores for the regression
+    (linear regression test) and the classification ($\chi^2$ test) tasks.} \\
+  \toprule
+  \bfseries Word
+  & \multicolumn{1}{r}{\bfseries Regression Test}
+  & \bfseries Word
+  & \multicolumn{1}{l}{\bfseries $\chi^2$ test} \\
+  \midrule
+  \endfirsthead%
+  \multicolumn{4}{>{\small}c}{\tablename\ \thetable{} (continued)} \\[.5em]
+  \toprule
+  \bfseries Word
+  & \multicolumn{1}{r}{\bfseries Regression Test}
+  & \bfseries Word
+  & \multicolumn{1}{l}{\bfseries $\chi^2$ test} \\
+  \midrule
+  \endhead%
+ ``service''      & 4779.7120 & ``never''        & 252.1801 \\
+ ``food''         & 1091.3028 & ``disappointed'' & 134.6838 \\
+ ``menu''         & 842.4428  & ``but''          & 90.5339 \\
+ ``restaurant''   & 426.9936  & ``delicious''    & 87.1951 \\
+ ``price''        & 334.4814  & ``pretty''       & 74.6208 \\
+ ``staff''        & 45.8618   & ``definitely''   & 73.9887 \\
+ ``taste''        & 30.4887   & ``great''        & 60.4785 \\
+ ``try''          & 5.6174    & ``bad''          & 36.9186 \\
+ ``order''        & 5.0945    & ``amazing''      & 27.0679 \\
+ ``pretty''       & 5.0555    & ``friendly''     & 27.0425 \\
+ ``went''         & 4.4674    & ``good''         & 21.6932 \\
+ ``definitely''   & 2.9621    & ``love''         & 20.4981 \\
+ ``quality''      & 2.4848    & ``fresh''        & 17.3218 \\
+ ``great''        & 2.0475    & ``nice''         & 16.1138 \\
+ ``enough''       & 1.8764    & ``worth''        & 8.0986 \\
+ ``but''          & 1.7342    & ``however''      & 4.6105 \\
+ ``never''        & 1.7136    & ``far''          & 3.7330 \\
+ ``little''       & 1.4200    & ``customer''     & 2.5491 \\
+ ``better''       & 1.3525    & ``little''       & 2.5083 \\
+ ``atmosphere''   & 1.2994    & ``food''         & 2.1749 \\
+ ``disappointed'' & 1.2220    & ``place''        & 1.8909 \\
+ ``friendly''     & 0.9617    & ``enough''       & 1.7993 \\
+ ``worth''        & 0.8761    & ``order''        & 1.7729 \\
+ ``come''         & 0.8290    & ``atmosphere''   & 1.4994 \\
+ ``bad''          & 0.8173    & ``try''          & 1.4254 \\
+ ``good''         & 0.6096    & ``chicken''      & 1.1713 \\
+ ``delicious''    & 0.5982    & ``probably''     & 0.8376 \\
+ ``probably''     & 0.5807    & ``people''       & 0.7268 \\
+ ``first''        & 0.4443    & ``again''        & 0.7014 \\
+ ``back''         & 0.4159    & ``first''        & 0.6913 \\
+ ``people''       & 0.3818    & ``came''         & 0.6697 \\
+ ``recommend''    & 0.3359    & ``service''      & 0.5829 \\
+ ``fresh''        & 0.2690    & ``really''       & 0.5087 \\
+ ``much''         & 0.2573    & ``recommend''    & 0.4861 \\
+ ``ordered''      & 0.2427    & ``went''         & 0.2694 \\
+ ``customer''     & 0.2028    & ``wait''         & 0.2199 \\
+ ``vegas''        & 0.1907    & ``staff''        & 0.1696 \\
+ ``chicken''      & 0.1431    & ``menu''         & 0.1277 \\
+ ``love''         & 0.1419    & ``quality''      & 0.1018 \\
+ ``really''       & 0.1193    & ``ordered''      & 0.0721 \\
+ ``nice''         & 0.1166    & ``back''         & 0.0643 \\
+ ``amazing''      & 0.1045    & ``restaurant''   & 0.0579 \\
+ ``however''      & 0.1022    & ``very''         & 0.0578 \\
+ ``again''        & 0.0594    & ``experience''   & 0.0488 \\
+ ``very''         & 0.0496    & ``price''        & 0.0085 \\
+ ``came''         & 0.0434    & ``much''         & 0.0058 \\
+ ``place''        & 0.0125    & ``vegas''        & 0.0050 \\
+ ``far''          & 0.0041    & ``come''         & 0.0050 \\
+ ``experience''   & 0.0023    & ``taste''        & 0.0017 \\
+ ``wait''         & 0.0002    & ``better''       & 0.0002 \\
+ \bottomrule
+\label{tab:features-list}
+\end{longtable}
 
 %%% Local Variables:
 %%% mode: latex
