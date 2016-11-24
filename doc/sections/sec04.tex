@@ -21,25 +21,26 @@ above, we obtain the following results.
 
 \subsection{Regression}
 
-In regression, we run cross validation for three methods: baseline, linear
-regression, and polynomial with degree two for different sets of top-$k$
-features.  We use MSE to measure the performance.  The results are presented in
-the left graph of Figure~\ref{fig:training}.
+Here, we evaluate three models using cross-validation: baseline (target
+average), linear and polynomial regression (of degree two) models for different
+subsets of the top-$k$ features.  The MSE yields the scores used to measure the
+performance of each model.  The final results are presented in the left-hand
+graph of Figure~\ref{fig:training}.
 
-Both, linear regression and polynomial regression can easily overcome the
-baseline. Polynomial regression performs a little bit better than linear
-regression. The performances become better if we use more features. However,
-using too many features does not help because of the correlation between them.
+The linear, as well as the polynomial regression model easily outperform the
+baseline average.  Polynomial regression produces slightly better scores for
+almost all subsets of top-$k$ features than its linear counterpart.  The best
+performances is achieved with different subsets for the linear and polynomial
+models, top-10 and top-7, respectively.  For these two $k$, we encounter a
+minimum for the performance.  With increasing $k$, the performance becomes
+worse due to the increasing correlation between the features.
 
-Based on those results, using 10 selected features help linear regression
-achieve the best result. Meanwhile, 7 selected features are enough for
-polynomial regression. In practice, we will choose polynomial regression as our
-final model and report only one result from it. Here, for demonstration purpose,
-we also run baseline and linear regression with the best setting on testing
-data. The results are presented in Table~\ref{tab:regperf}.
-
-As we can see, polynomial regression still maintains a good performance compare
-to linear regression and beats the baseline by a significant amount.
+In practice, we choose the polynomial regression model with 7 top-$k$ features
+as the final candidate and report only the performance on the test set.  For
+demonstration purposes, we additionally consider the baseline and linear
+regression model with their respective best top-$k$ values.  The results are
+presented in Table~\ref{tab:regperf}.  The polynomial model still outperforms
+both models and beats the baseline by a significant margin.
 
 \begin{table}[t]
   \caption{Regression performance comparison of (1) baseline, (2) linear
@@ -62,20 +63,27 @@ to linear regression and beats the baseline by a significant amount.
 \end{table}
 
 \subsection{Classification}
-We continue apply the same procedure in classification task. The right graph in
-Figure~\ref{fig:training} shows F1-score of baseline, k-NN with k equals 1 and
-5, and Random Forest with 10 and 50 trees.
 
-Only random forests with a small number of features can (barely) beat the
-baseline. Both random forest settings achieve the best result when using 6
-features. The performances become worse when the number of features
-increases. Random forests with 50 trees catches up with the baseline when we
-used almost all features.
+We apply the same procedure as above for the classification task.  The
+right-hand graph in Figure~\ref{fig:training} shows \fmeasure{} scores of the
+baseline model (average target), $k$-NN classifiers with $k = 1$ and $k = 5$,
+and random forest classifiers with 10 and 50 trees.
 
-k-NN only overcome the baseline by a very little margin when using 1 or 2
-features. Both k-NN settings have the best result with 2 features. The rest
-perform much worse than the baseline. There is one interesting dip in the
-performance when using k-NN with 1 neighbor and 3 features.
+Only random forests with a small number of features manage to beat the baseline
+model.  Both random forest settings achieve the best result when using top-$k$
+subset of 6 features.  The performance worsens with increasing number of $k$
+features before slightly improving with even greater numbers of $k$.  The model
+with 50 trees performs best overall.
+
+The $k$-NN classifiers barely manage to beat the baseline when using top-$k$
+subsets of 1 and 2 features.  Both models achieve the best result with 2
+features, with performance decreasing significantly with increasing $k$.  A very
+unexpected dip in the performance occurs with $k = 1$ neighbors and a top-$k$
+subset of 3 features (and for 2 features in the test data).  We assume that this
+phenomenon is due to added noise to the third and second top feature in the
+training and testing data sets, respectively, creating an opposite correlation.
+This is partially confirmed when comparing the results to the $k$-NN model with
+5 neighbors.
 
 Our final model we choose is random forest with 50 trees and using 6 best
 selected features. For demonstration purpose, we train all models with the best

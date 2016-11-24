@@ -58,10 +58,11 @@ and the entire sample space; the required memory exceeds our availability.
 
 We test $k$-NN with 1 and 5 neighbors, and chose 10 and 50 trees for two random
 forest models as a proxy for marginal comparison and to keep the running time of
-evaluating 50 different subsets of features manageable.  The performance of the
-random forest model can be further improved by an increasing number of decision
-trees.  This improvement comes with a significant increase in training time.
-For the purpose of this experiment, the chosen parameters are sufficient to make
+evaluating 50 different subsets of features manageable.  Neither random forest
+models have a limit given for the maximum depth.  The performance of the random
+forest model can be further improved by an increasing number of decision trees.
+This improvement comes with a significant increase in training time.  For the
+purpose of this experiment, the chosen parameters are sufficient to make
 evaluate the performance for different subsets of top-$k$ features.
 
 \subsection{Evaluation Measures}
