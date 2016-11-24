@@ -17,17 +17,25 @@
   \bfseries Word
   & \multicolumn{1}{r}{\bfseries Regression Test}
   & \bfseries Word
-  & \multicolumn{1}{l}{\bfseries $\chi^2$ test} \\
+  & \multicolumn{1}{l@{\kern3pt}}{\bfseries $\chi^2$ test} \\
   \midrule
   \endfirsthead%
+
   \multicolumn{4}{>{\small}c}{\tablename\ \thetable{} (continued)} \\[.5em]
   \toprule
   \bfseries Word
   & \multicolumn{1}{r}{\bfseries Regression Test}
   & \bfseries Word
-  & \multicolumn{1}{l}{\bfseries $\chi^2$ test} \\
+  & \multicolumn{1}{l@{\kern3pt}}{\bfseries $\chi^2$ test} \\
   \midrule
   \endhead%
+
+  \midrule
+  \multicolumn{4}{>{\small}r@{\kern3pt}}{\small continued on next page} \\
+  \endfoot%
+
+  \bottomrule
+  \endlastfoot%
  ``service''      & 4779.7120 & ``never''        & 252.1801 \\
  ``food''         & 1091.3028 & ``disappointed'' & 134.6838 \\
  ``menu''         & 842.4428  & ``but''          & 90.5339 \\
@@ -78,7 +86,6 @@
  ``far''          & 0.0041    & ``come''         & 0.0050 \\
  ``experience''   & 0.0023    & ``taste''        & 0.0017 \\
  ``wait''         & 0.0002    & ``better''       & 0.0002 \\
- \bottomrule
 \label{tab:features-list}
 \end{longtable}
 
