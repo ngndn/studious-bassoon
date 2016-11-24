@@ -1,13 +1,26 @@
 \section{Conclusion}
 \label{sec:five}
 
-Given two tasks with Yelp data set, we successfully apply machine learning to solve them. We work through the standard machine learning pipeline, going from feature selection, determining hyper-parameters for model, choosing model, and apply final model on the test data.
+In summary, we developed a streamlined framework to evaluate any regression and
+classification model with a common interface using a variety of different
+scoring functions, cross-validation and feature selection methods on a common
+data set.  More specifically, provided with the Yelp data set, we successfully
+applied machine learning algorithms to optimally solve the above mentioned
+tasks.  As part of our pipeline, we determined hyper-parameters for all models
+and based on the evaluation chose the best one.
 
-With feature selection, we are able to select the features which correlated with the outcome for regression task, or have a high discriminate power for classification task. For both task, we find that a small number of features are enough to achieve the desired result.
+Using feature selection techniques, we selected the best features for our
+models; features highly correlated with the target outcome for the regression
+task, and features with a high discriminate power for classification.  In both
+cases, we found a relatively small number of features to be sufficient for an
+optimal performance.
 
-For regression task, we have overcome the baseline using polynomial regression with degree two by a significant margin. We also surpass the baseline in classification task with random forest. However, the performance is just a little bit better than baseline.
+We have successfully bested the baseline for the regression using our own
+polynomial regression model implementation, yet barely beat the baseline with
+our $k$-Nearest Neighbor classifier and borrowed random forest model.
 
-We also develop a configurable and extendable framework which can be used for developing and reporting on future learning machine project.
+Going further, we plan to continue developing and expanding our framework for
+future model evaluation on different data sets.
 
 %%% Local Variables:
 %%% mode: latex
