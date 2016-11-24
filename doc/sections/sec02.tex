@@ -97,8 +97,9 @@ probability of the most probable class.  Alternatively, when using other scoring
 functions such as accuracy or \fmeasure, the value becomes the label of the most
 probable class.
 
-We implement a $k$-Nearest Neighbor ($k$-NN) classifier and compare its
-performance to the baseline and a random forest algorithm.
+We implement a $k$-Nearest Neighbor~\cite{cover:1967} ($k$-NN) classifier and
+compare its performance to the baseline and a random forest~\cite{breiman:2001}
+algorithm.
 
 \subsubsection{$k$-Nearest Neighbor ($k$-NN)}
 
@@ -117,7 +118,7 @@ in detail in secion~\ref{sec:three}.
 
 \subsubsection{Random Forest}
 
-Random forest\cite{DBLP:journals/ml/Breiman01} is an ensemble learning method, which can be used for
+Random forest is an ensemble learning method, which can be used for
 classification or regression tasks.  Model fitting is done by training many
 decision trees using random samples from the training data.  This technique is
 also known as bootstrap aggregating or bagging.  After training, the model
