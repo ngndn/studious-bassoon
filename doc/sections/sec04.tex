@@ -82,18 +82,16 @@ unexpected dip in the performance occurs with $k = 1$ neighbors and a top-$k$
 subset of 3 features (and for 2 features in the test data).  We assume that this
 phenomenon is due to added noise to the third and second top feature in the
 training and testing data sets, respectively, creating an opposite correlation.
-This is partially confirmed when comparing the results to the $k$-NN model with
-5 neighbors.
+The comparison of these results to the $k$-NN model with 5 neighbors partially
+confirms this belief.
 
-Our final model we choose is random forest with 50 trees and using 6 best
-selected features. For demonstration purpose, we train all models with the best
-settings and run on the test data. The results are presented in the
-Table~\ref{tab:clsperf}
-
-Our final model still returns the best result on the data set although by not
-much when comparing to the baseline. Other models surpass the baseline by a
-small margin as well, except for k-NN with 1 neighbor and 2 features which gives
-a very low performance.
+Based on the previous tests, our final candidate is a random forest with 50
+trees fitted with the top-$k$ subset of 6 features.  Once more for demonstration
+purposes, we retain all models with their corresponding optimal settings and
+evaluate them on the test data set.  The results are presented in the
+Table~\ref{tab:clsperf}.  The random forest (50 estimators) continues to
+outperform the other models.  Based on the random initialization of the forest,
+however, the final performance may vary by a small amount.
 
 \begin{table}[t]
   \caption{Classification performance comparison of (1) baseline, $k$-NN with
