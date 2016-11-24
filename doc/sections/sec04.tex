@@ -1,8 +1,15 @@
 \section{Results}
 \label{sec:four}
+\subsection{Regression}
+We now present the results for regression and classification task.
 
-Show off performance characteristics for each method using f-measure and MSE,
-like in this Table~\ref{tab:regperf}.
+In regression, we run cross validation for three methods: baseline, linear regression, and polynomial with degree two for different sets of top-k features. We use MSE to measure the performance. The results are presented in the left graph of Figure~\ref{fig:training}. 
+
+Both linear regression can easily overcome the baseline. Polynomial regression perform a little bit better than linear regression. The performances become better if we use more features. However, using too many features does not help because of correlation between them. 
+
+Based on those results, using 10 selected features help linear regression achieve the best result. Meanwhile, 7 selected features are enough for polynomial regression. In practice, we will choose polynomial regression as our final model and report only one result from it. Here, for demonstration purpose, we also run baseline and linear regression with the best setting on testing data. The results are presented in Table~\ref{tab:regperf}.
+
+As we can see, polynomial regression still maintains a good performance compare to linear regression and beats the baseline by a significant amount.
 
 \begin{table}[t]
   \caption{Regression performance comparison of (1) baseline, (2) linear
@@ -18,11 +25,14 @@ like in this Table~\ref{tab:regperf}.
     \midrule
     (1) & --- &  12.60835 \\
     (2) &  10 &  0.047144 \\
-    (3) &  13 &  0.032151 \\
+    (3) &  7  &  0.032311 \\
     \bottomrule
   \end{tabularx}
 \label{tab:regperf}
 \end{table}
+
+\subsection{Classification}
+
 
 \begin{table}[t]
   \caption{Classification performance comparison of (1) baseline, $k$-NN with
